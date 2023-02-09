@@ -1,5 +1,6 @@
 # test
-
+BAUMANN Pierre 21105419
+on a pas distribué les taches
 
 
 ## Getting started
