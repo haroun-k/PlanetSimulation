@@ -27,49 +27,36 @@ func generate_centers_dictionary() :
 	for i in range(0,meshVertices.size(),3):
 		centersDictionary[(meshVertices[i]+meshVertices[i+1]+meshVertices[i+2])/3]=[meshVertices[i+0],meshVertices[i+1],meshVertices[i+2]]
 
-
-func find_min_distance() -> float :
-	# Calcule la distance minimale entre 2 centres
-	var min_dist = 1000.0
-	var current_dist
-	
-	# On trouve le centre le plus proche du centre 0
-	for i in range(1,centersDictionary.size()):
-		current_dist = centersDictionary.keys()[0].distance_to(centersDictionary.keys()[i])
-		if current_dist < min_dist :
-			min_dist = current_dist
-	return min_dist
-
-
-func generate_centers_neighbours_partial(keys : PackedVector3Array, start : int, end : int, dist : float):
+func generate_centers_neighbours_partial(keys : PackedVector3Array, start : int, end : int):
 	# Calcule les voisins du start-ieme centre au end-ieme centre en utilisant la distance constante entre 2 voisins.
 	for k in range(start,end):
 
-		var neighbours = [Vector3(9,9,9),Vector3(9,9,9),Vector3(9,9,9)]
-		var found_neighbours = 0
-		var distance = 1000.0
-		var i = 0
+		# Trouve les 3 centres les plus proches
+		var neighbours = [keys[k],keys[k],keys[k]]
+		var dists = [999,999,999]
+		for i in range(0,keys.size()):
+			if i!=k:
+				var d = keys[i].distance_to(keys[k])
+				if d < dists[0] :
+					dists[0] = d
+					neighbours[0] = keys[i]
+				elif d < dists[1] :
+					dists[1] = d
+					neighbours[1] = keys[i]
+				elif d < dists[2] :
+					dists[2] = d
+					neighbours[2] = keys[i]
 
-		# Recherche de ses 3 voisins
-		while found_neighbours < 3 :
-			if i!=k : # On ne prend pas en compte le centre lui-meme
-				distance = keys[i].distance_to(keys[k])
-				if abs(distance - dist) < 0.02: # Approximation a cause des erreurs d'arrondi des floats
-					neighbours[found_neighbours] = keys[i]
-					found_neighbours += 1
-			i+=1
-
-		centersNeighboursDictionary[keys[k]] = neighbours
+		self.centersNeighboursDictionary[keys[k]] = neighbours
 
 func generate_centers_neighbours():
 	# Calcule la distance entre 2 voisins et calcule les voisins de tous les centres 
 
-	centersNeighboursDictionary.clear()
+	centersNeighboursDictionary = centersDictionary.duplicate()
 	const DIVISIONS = 64 # Nombre de threads
 
-	var taille = centersDictionary.size()
-	var keys = centersDictionary.keys()
-	var distance_min = find_min_distance()
+	var taille = centersNeighboursDictionary.size()
+	var keys = centersNeighboursDictionary.keys()
 	var slices = []
 
 	# Repartition : chaque thread calcule les voisins de la ieme partie des centres
@@ -81,12 +68,12 @@ func generate_centers_neighbours():
 	var threads = []
 	for t in DIVISIONS :
 		threads.append(Thread.new())
-		threads[threads.size() - 1].start( func() : generate_centers_neighbours_partial(keys, slices[t], slices[t+1], distance_min))
+		threads[threads.size() - 1].start( func() : generate_centers_neighbours_partial(keys, slices[t], slices[t+1]))
 
 	# Attente de la fin des threads
 	for t in threads :
 		t.wait_to_finish()
-	
+				
 
 func initial():
 
