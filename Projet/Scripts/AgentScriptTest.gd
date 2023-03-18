@@ -1,12 +1,12 @@
 class_name Agent extends SpringArm3D
-@export var current_direction : Vector3
-@export var current_position : Vector3
+
+@export var selfData : AgentData
 
 func spherical_to_cartesian(theta:float, phi:float, r:float):
 	return Vector3(r*sin(theta)*cos(phi),r*sin(theta)*sin(phi),r*cos(theta))
 
-@onready var world=get_parent().get_node("WorldMesh")
-
+@onready var worldNode=get_parent().get_node("WorldMesh")
+@onready var world=worldNode.worldResource
 
 func get_closest_center(pos:Vector3, points:Array):
 	var closest_point = points[0]
@@ -31,19 +31,19 @@ func rotate_around_axis(pos:Vector3, axis:Vector3, angle:float):
 	return Vector3(x,y,z)
 
 func update_position():
-	current_position=get_closest_center(get_child(0).global_position,world.centersDictionary.keys())
+	selfData.current_position=get_closest_center(get_child(0).global_position,world.centersDictionary.keys())
 	
 func take_random_direction():
-	current_direction=world.centersNeighboursDictionary[current_position][randi_range(0,2)]
+	selfData.current_direction=world.centersNeighboursDictionary[selfData.current_position][randi_range(0,2)]
 
 func go_to_random_position():
 	rotate_towards_point(Vector3(randf(),randf(),randf()))
 func auto_move():
-	if current_direction == current_position:
+	if selfData.current_direction == selfData.current_position:
 		update_position()
 		take_random_direction()
-	rotate_towards_point(current_direction)
-	get_child(0).get_child(0).global_position=global_position
+	rotate_towards_point(selfData.current_direction)
+	get_child(0).get_child(0).global_position=selfData.current_direction
 	update_position()
 	
 	
@@ -56,6 +56,7 @@ func _process(delta):
 	auto_move()
 	
 func _ready():
+	selfData = AgentData.new()
 	var arr_mesh = ArrayMesh.new()
 	
 	var cube = BoxMesh.new()
@@ -73,10 +74,8 @@ func _ready():
 	
 	margin=0.05
 	spring_length=200
-	print("margin = ", margin, ", spring_length = ", spring_length)
 	add_child(agentMesh)
-	print(get_child_count())
-	print(get_child(0))
+
 	get_child(0).add_child(directionMesh)
 	global_position=Vector3(0,0,2)
 #	go_to_random_position()
