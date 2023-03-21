@@ -1,11 +1,15 @@
 class_name AgentData extends Resource
 
-
+@export var world : Node3D
 @export var current_direction : Vector3
 @export var current_position : Vector3
 
+@export var cooldown_reproduction : int
+@export var age : int
 
-@export var age : int 
+@export var agentMesh : MeshInstance3D
+@export var directionMesh : MeshInstance3D
+
 @export var speed : int
 @export var experience : int 
 @export var canReproduce : bool
