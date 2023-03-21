@@ -1,4 +1,5 @@
 class_name WorldResource extends Resource
+
 @export var resolution :int
 
 #@export var pointNeighbours :={}
@@ -9,7 +10,6 @@ class_name WorldResource extends Resource
 @export var tilesData : Array[TileResource]
 	
 @export var colors : PackedColorArray : 
-	set(v) : colors=v
 	get : 
 		return get_world()
 
@@ -37,10 +37,11 @@ func get_random_world():
 	return PackedColorArray(res)
 	
 func get_world():
+#	pass
 	for i in range(10) : tilesData.pick_random().update_tile()
 	var res = []
 	for i in tilesData : 
-		
+
 		res.push_back(i.get_color())
 		res.push_back(i.get_color())
 		res.push_back(i.get_color())
