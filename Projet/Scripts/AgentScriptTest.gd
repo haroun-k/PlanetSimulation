@@ -1,12 +1,16 @@
 class_name Agent extends SpringArm3D
 
 @export var selfData : AgentData
-
-func spherical_to_cartesian(theta:float, phi:float, r:float):
-	return Vector3(r*sin(theta)*cos(phi),r*sin(theta)*sin(phi),r*cos(theta))
-
 @onready var worldNode=get_parent().get_node("WorldMesh")
 @onready var world=worldNode.worldResource
+
+const TR_types = TileResource.TERRAIN_TYPE
+const COOLDOWN = 50
+const AGE_MIN = 200
+const AGE_MAX = 300
+
+
+
 
 func get_closest_center(pos:Vector3, points:Array):
 	var closest_point = points[0]
@@ -34,49 +38,77 @@ func update_position():
 	selfData.current_position=get_closest_center(get_child(0).global_position,world.centersDictionary.keys())
 	
 func take_random_direction():
-	selfData.current_direction=world.centersNeighboursDictionary[selfData.current_position][randi_range(0,2)]
+	var neigs = world.centersNeighboursDictionary[selfData.current_position]
+
+	neigs.shuffle()
+	for i in range(3):
+		var cur_case = world.tilesData[world.get_point_index(neigs[i])]
+		if not (cur_case.terrainType in [TR_types.FIRE, TR_types.WATER]):
+			selfData.current_direction=neigs[i]
+			return true
+	return false
 
 func go_to_random_position():
 	rotate_towards_point(Vector3(randf(),randf(),randf()))
+	
 func auto_move():
 	if selfData.current_direction == selfData.current_position:
 		update_position()
-		take_random_direction()
+		if not take_random_direction() :
+			return
 	rotate_towards_point(selfData.current_direction)
 	get_child(0).get_child(0).global_position=selfData.current_direction
 	update_position()
+
+func reproduire(other : Agent) -> Agent:
+	selfData.cooldown_reproduction=COOLDOWN
+	other.selfData.cooldown_reproduction=COOLDOWN
+	var new = Agent.new(worldNode)
+	#new.set_pos(self.global_position)
+	return new
+		
+
+func is_dead() -> bool:
+	return (selfData.age<0 or world.tilesData[world.get_point_index(selfData.current_position)].terrainType==TileResource.TERRAIN_TYPE.FIRE)
 	
-	
-	
-	
-	
-	
-	
-func _process(delta):
+func set_pos(new_pos):
+	selfData.global_position = new_pos
+		
+func update_stats():
+	if selfData.cooldown_reproduction>0:
+		selfData.cooldown_reproduction-=1
+	if selfData.age>0:
+		selfData.age-=5
+
+func update():
 	auto_move()
+	update_stats()
 	
-func _ready():
+
+
+func _init(world : Node3D):
 	selfData = AgentData.new()
-	var arr_mesh = ArrayMesh.new()
+	selfData.world = world
 	
-	var cube = BoxMesh.new()
+	randomize()
+	selfData.cooldown_reproduction = COOLDOWN
+	selfData.age = randi_range(AGE_MIN,AGE_MAX)
+
+func _ready():
+	selfData.agentMesh = MeshInstance3D.new()
+	selfData.agentMesh.mesh = BoxMesh.new()
+	selfData.agentMesh.set_scale(Vector3(0.1, 0.1, 0.1))
 	
-	var agentMesh = MeshInstance3D.new()
-	arr_mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, cube.surface_get_arrays(0) )
-	agentMesh.mesh=arr_mesh
-	agentMesh.set_scale(Vector3(0.1, 0.1, 0.1))
-	
-	
-	var directionMesh = MeshInstance3D.new()
-	arr_mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, cube.surface_get_arrays(0) )
-	directionMesh.mesh=arr_mesh
-	directionMesh.set_scale(Vector3(0.05, 0.05, 0.05))
+	selfData.directionMesh = MeshInstance3D.new()
+	selfData.directionMesh.mesh=BoxMesh.new()
+	selfData.directionMesh.set_scale(Vector3(0.05, 0.05, 0.05))
+
 	
 	margin=0.05
 	spring_length=200
-	add_child(agentMesh)
+	add_child(selfData.agentMesh)
 
-	get_child(0).add_child(directionMesh)
+	get_child(0).add_child(selfData.directionMesh)
 	global_position=Vector3(0,0,2)
 #	go_to_random_position()
 	
