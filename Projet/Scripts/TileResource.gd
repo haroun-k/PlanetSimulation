@@ -1,8 +1,11 @@
-class_name TileResource extends Resource
+class_name TileResource
+extends Resource
 
 @export var tile_position : Vector3
+
 enum TERRAIN_TYPE {WATER,GRASS,MUD,FIRE}
-@export var terrainType : int
+@export var terrainType : TERRAIN_TYPE
+var extra_data : int
 @export_color_no_alpha var tileColor : Color :
 	get : return get_color()
 @export var neighbours : Array[TileResource]
@@ -11,32 +14,45 @@ enum TERRAIN_TYPE {WATER,GRASS,MUD,FIRE}
 func get_color():
 	match terrainType :
 		TERRAIN_TYPE.GRASS :
-			return Color.SPRING_GREEN
+			return Color.PALE_GREEN
 		TERRAIN_TYPE.WATER :
-			return Color.DEEP_SKY_BLUE
+			return Color.DODGER_BLUE
 		TERRAIN_TYPE.MUD :
-			return Color.BURLYWOOD
+			return Color.DIM_GRAY
 		TERRAIN_TYPE.FIRE :
-			return Color.DARK_RED
+			return Color.BROWN
 		_ : return Color.DARK_SLATE_GRAY
 
 
 func init_tile():
 	terrainType = TERRAIN_TYPE.GRASS
-	if(randf()<0.2) : terrainType = TERRAIN_TYPE.WATER 
-	if(randf()<0.1) : terrainType = TERRAIN_TYPE.FIRE 
+	extra_data = 0
+	if (randf()<0.1) : 
+		terrainType = TERRAIN_TYPE.WATER 
+	if (randf()<0.03) : 
+		terrainType = TERRAIN_TYPE.FIRE 
 
 func update_tile():
-	if terrainType==TERRAIN_TYPE.GRASS and ( neighbours[0].terrainType == TERRAIN_TYPE.FIRE or neighbours[1].terrainType == TERRAIN_TYPE.FIRE or neighbours[2].terrainType == TERRAIN_TYPE.FIRE):
-		terrainType=TERRAIN_TYPE.FIRE
-	elif terrainType==TERRAIN_TYPE.GRASS and (randf()<0.0005) : terrainType = TERRAIN_TYPE.FIRE 
+
+	match self.terrainType :
+
+		TERRAIN_TYPE.GRASS : # ca fait rien
+			self.extra_data = 0
 		
-	elif terrainType==TERRAIN_TYPE.MUD and ( neighbours[0].terrainType == TERRAIN_TYPE.GRASS or neighbours[1].terrainType == TERRAIN_TYPE.GRASS or neighbours[2].terrainType == TERRAIN_TYPE.GRASS):
-		terrainType=TERRAIN_TYPE.GRASS
-	elif terrainType==TERRAIN_TYPE.MUD and (randf()<0.1) : terrainType = TERRAIN_TYPE.GRASS 
+		TERRAIN_TYPE.FIRE :
+			for n in neighbours :
+				if n.terrainType==TERRAIN_TYPE.GRASS :
+					n.terrainType=TERRAIN_TYPE.FIRE
+
+			self.terrainType = TERRAIN_TYPE.MUD
+
+		TERRAIN_TYPE.MUD :
+			if (randf()<0.01) :
+				for n in neighbours :
+					if n.terrainType==TERRAIN_TYPE.GRASS :
+						self.terrainType=TERRAIN_TYPE.GRASS
+						break
 		
-	elif terrainType==TERRAIN_TYPE.FIRE :
-		for i in neighbours :
-			if(i.terrainType==TERRAIN_TYPE.GRASS): i.terrainType=TERRAIN_TYPE.FIRE
-			terrainType=TERRAIN_TYPE.MUD
+		TERRAIN_TYPE.WATER : # ca fait rien
+			self.extra_data = 0
 	
