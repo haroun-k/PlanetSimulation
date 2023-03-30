@@ -9,6 +9,7 @@ class_name AgentData extends Resource
 
 @export var agentMesh : MeshInstance3D
 @export var directionMesh : MeshInstance3D
+@export var agentScene : Node3D
 
 @export var speed : int
 @export var experience : int 
