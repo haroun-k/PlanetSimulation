@@ -3,6 +3,7 @@ class_name Agent extends SpringArm3D
 @export var selfData : AgentData
 @onready var worldNode=get_parent().get_node("WorldMesh")
 @onready var world=worldNode.worldResource
+@onready var atmosphere = get_parent().get_node("Atmosphere")
 
 const TR_types = TileResource.TERRAIN_TYPE
 const COOLDOWN = 50
@@ -109,6 +110,7 @@ func update_stats():
 func update():
 	auto_move()
 	update_stats()
+	atmosphere.rechauffer()
 	
 
 func _init(world : Node3D, initialCenterPosition : Vector3):

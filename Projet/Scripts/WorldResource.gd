@@ -58,7 +58,7 @@ func init_entities(world : Node3D):
 
 func get_world():
 #	pass
-	for i in range(10) : tilesData.pick_random().update_tile()
+	for i in range(10) : tilesData.pick_random().update_tile(waterHeight)
 	var res = []
 #	res.resize(tilesData.size()*3)
 	for i in tilesData : 
