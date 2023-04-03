@@ -1,7 +1,10 @@
 class_name Entity extends MeshInstance3D
 
+@export var entityResource : EntityResource
+
 # Called when the node enters the scene tree for the first time.
 func init_entity(res : EntityResource):
+	
 	mesh=res.mesh
 	position=res.position
 	
@@ -18,3 +21,9 @@ func init_entity(res : EntityResource):
 		res.ENTITY_TYPE.BUSH :
 			scale=Vector3(0.1,0.1,0.1)
 
+
+
+func _init(position : Vector3):
+	entityResource = EntityResource.new()
+	entityResource.init_entity_resource(position,0,1)
+	init_entity(entityResource)

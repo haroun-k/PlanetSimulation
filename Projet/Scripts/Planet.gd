@@ -31,6 +31,8 @@ func update_agents():
 
 func update_world():
 	icosphere.update()
+	icosphere.worldResource.spawn_entities(self)
+	
 	
 func init_agents():
 	for _i in 50:
@@ -42,8 +44,8 @@ func init_agents():
 
 func init_world():
 	icosphere.init_icosphere()
-	icosphere.worldResource.init_entities(self)
-
+	icosphere.worldResource.maxAmountOfTrees=100
+	
 const tick_duration := 0
 signal ticked
 func run_ticks() :

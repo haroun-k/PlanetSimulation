@@ -8,8 +8,9 @@ enum ENTITY_TYPE {TREE,ROCK,BUSH,EMPTY}
 
 @export var mesh : Mesh
 
-func init_entity_resource(position : Vector3):
-	entityType=randi_range(0,ENTITY_TYPE.size())
+func init_entity_resource(position : Vector3,type : int, amount : int):
+#	entityType=randi_range(0,ENTITY_TYPE.size())
+	entityType=type
 	match entityType :
 		ENTITY_TYPE.TREE :
 			mesh = ResourceLoader.load("res://Objects/Entities/Tree3.obj")

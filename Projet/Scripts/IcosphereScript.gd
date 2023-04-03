@@ -157,5 +157,5 @@ func update():
 	arrays[Mesh.ARRAY_COLOR] = worldResource.colors
 	arr_mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
 	mesh = arr_mesh
-	worldResource.waterHeight+=0.0001
+#	worldResource.waterHeight+=0.0001
 	material_override.set_shader_parameter("water_height",worldResource.waterHeight)

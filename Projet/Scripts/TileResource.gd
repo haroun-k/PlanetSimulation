@@ -2,15 +2,16 @@ class_name TileResource
 extends Resource
 
 @export var tile_position : Vector3
-
 enum TERRAIN_TYPE {WATER, GRASS, MUD, FIRE, UNDEFINED}
 @export var terrainType : TERRAIN_TYPE
 var extra_data : int
 @export_color_no_alpha var tileColor : Color :
 	get : return get_color()
+	
 @export var neighbours : Array[TileResource]
 @export var distanceFromWater : int = 10
-		
+
+
 
 class WFC_Rule :
 	var rules : Dictionary
@@ -27,7 +28,7 @@ var wavefncollapse : Dictionary
 func get_color():
 	match terrainType :
 		TERRAIN_TYPE.GRASS :
-			return Color.PALE_GREEN.lerp(Color.DIM_GRAY,clampf((distanceFromWater-1)/5.,0,1))
+			return Color.PALE_GREEN#.lerp(Color.DIM_GRAY,clampf((distanceFromWater-1)/5.,0,1))
 		TERRAIN_TYPE.WATER :
 			return Color.DODGER_BLUE
 		TERRAIN_TYPE.MUD :
@@ -41,9 +42,9 @@ func get_color():
 func init_tile(waterHeight : float):
 	
 	self.wavefncollapse = {}
-	wavefncollapse[TERRAIN_TYPE.WATER] = WFC_Rule.new({ TERRAIN_TYPE.GRASS : 0.9, TERRAIN_TYPE.MUD : 0.1 }, [TERRAIN_TYPE.FIRE])
-	wavefncollapse[TERRAIN_TYPE.GRASS] = WFC_Rule.new({ TERRAIN_TYPE.GRASS : 0.7, TERRAIN_TYPE.MUD : 0.3 }, [])
-	wavefncollapse[TERRAIN_TYPE.MUD] = WFC_Rule.new({ TERRAIN_TYPE.GRASS : 0.1, TERRAIN_TYPE.MUD : 0.9 }, [])
+	wavefncollapse[TERRAIN_TYPE.WATER] = WFC_Rule.new({ TERRAIN_TYPE.GRASS : 0.5, TERRAIN_TYPE.MUD : 0.5 }, [TERRAIN_TYPE.FIRE])
+	wavefncollapse[TERRAIN_TYPE.GRASS] = WFC_Rule.new({ TERRAIN_TYPE.GRASS : 0.8, TERRAIN_TYPE.MUD : 0.2 }, [])
+	wavefncollapse[TERRAIN_TYPE.MUD] = WFC_Rule.new({ TERRAIN_TYPE.GRASS : 0.8, TERRAIN_TYPE.MUD : 0.2 }, [])
 	wavefncollapse[TERRAIN_TYPE.FIRE] = WFC_Rule.new({ TERRAIN_TYPE.FIRE : 1.0 }, [])
 	
 	terrainType = TERRAIN_TYPE.UNDEFINED
@@ -68,7 +69,7 @@ func update_tile(waterHeight : float):
 		if t != TERRAIN_TYPE.UNDEFINED :
 			probas[t] = 0.0
 			
-	print(probas)
+#	print(probas)
 
 	for n in neighbours :
 		if n.terrainType != TERRAIN_TYPE.UNDEFINED :
@@ -83,6 +84,7 @@ func update_tile(waterHeight : float):
 	if probas.is_empty():
 		self.terrainType = TERRAIN_TYPE.UNDEFINED
 		return
+		
 
 	var tile_probas = []
 	for t in probas.keys():
