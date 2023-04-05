@@ -11,7 +11,7 @@ func reproduire(other : Agent) -> Agent:
 	play_animation("Dance")
 	selfData.ticksSinceReproduced=0
 	other.selfData.ticksSinceReproduced=0
-	var new = Agent.new(worldNode, selfData.current_position)
+	var new = Agent.new(worldNode, selfData.current_position, selfData.specie)
 	return new
 
 func play_animation(animationName : String) :
@@ -43,14 +43,15 @@ func eat(food):
 	if food is Agent : 
 		pass
 	if food is Entity : 
-		food.queue_free()
-		world.amountOfTrees-=1
+		if food.eat() :
+			world.amountOfTrees-=1
 		selfData.hunger-=225
 		
 func get_closest_center():
 	return selfData.current_position if get_child(0).global_position.distance_squared_to(selfData.current_position)<get_child(0).global_position.distance_squared_to(selfData.current_path[0]) else selfData.current_path[0]
 
 func rotate_towards_direction():
+	
 	var axis = get_child(0).global_position.cross(selfData.current_path[0])
 	var angle = acos(global_position.dot(selfData.current_path[0])/(global_position.length()*selfData.current_path[0].length()))
 	if axis != Vector3.ZERO and not is_nan(angle) : 
@@ -83,21 +84,23 @@ func auto_move_ea():
 	if selfData.current_path[0] == selfData.current_position:
 		selfData.current_path.pop_front()
 		if selfData.current_path.size()==0:
-			var curEnt=world.get_entities_on_tile(selfData.current_position)
-			if curEnt.size()!=0: eat(curEnt.pick_random())
 			if selfData.hunger>500 and selfData.lookForEntityCooldown>200 and world.amountOfTrees!=0 : 
+				var nearEntities=world.get_entities_on_tile(selfData.current_position)
+				if nearEntities.size()!=0: eat(nearEntities.pick_random())
 				selfData.current_path = world.myAstar.get_point_path(world.get_point_index_ordered(selfData.current_position), world.get_point_index_ordered(get_nearest_entity_position()))
 				selfData.lookForEntityCooldown=0
 			if selfData.current_path.size()==0 : 
 				take_random_direction()
 		get_child(0).rotate_object_local(transform.basis.y.normalized(), randf() ) #acos(get_rotation().dot(selfData.current_path[0])/(get_rotation().length()*selfData.current_path[0].length()))
+	if selfData.current_path.size()==0:
+		selfData.current_path=[selfData.current_position]
 	rotate_towards_direction()
 	get_child(0).get_child(get_child(0).get_child_count()-1).global_position=selfData.current_path[selfData.current_path.size()-1]
 	update_position()
 
 
 func is_dead() -> bool:	
-	return (selfData.age>2000000 or world.tilesData[world.get_point_index(selfData.current_position)].terrainType==TileResource.TERRAIN_TYPE.WATER)
+	return (selfData.age>2000000 or world.tilesData[world.get_point_index_ordered(selfData.current_position)].terrainType==TileResource.TERRAIN_TYPE.WATER)
 
 func update_stats():
 	selfData.ticksSinceReproduced+=1
@@ -110,7 +113,7 @@ func update():
 	update_stats()
 	
 
-func _init(world : Node3D, initialCenterPosition : Vector3):
+func _init(world : Node3D, initialCenterPosition : Vector3, specieNumber : int):
 	selfData = AgentData.new()
 	selfData.current_position=initialCenterPosition
 	selfData.current_path.push_back(selfData.current_position)
@@ -118,6 +121,7 @@ func _init(world : Node3D, initialCenterPosition : Vector3):
 	position=initialCenterPosition*10
 	
 	selfData.view_distance = 0.5
+	selfData.specie = specieNumber
 	randomize()
 	selfData.ticksSinceReproduced = 0
 	selfData.age = 0

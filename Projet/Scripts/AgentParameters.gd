@@ -1,5 +1,6 @@
 class_name AgentData extends Resource
 
+@export var specie : int
 @export var world : Node3D
 @export var current_path : Array
 @export var current_direction : Vector3

@@ -4,10 +4,10 @@ class_name Entity extends MeshInstance3D
 
 # Called when the node enters the scene tree for the first time.
 func init_entity(res : EntityResource):
-	
+
 	mesh=res.mesh
 	position=res.position
-	
+
 	var axis = position.cross(Vector3(0,1,0)).normalized()
 	var angle = acos(Vector3(0,1,0).dot(position)/position.length())
 	rotate_object_local(axis,-angle)
@@ -24,9 +24,9 @@ func init_entity(res : EntityResource):
 func eat():
 	entityResource.quantity-=1
 	if entityResource.quantity==0 : 
-		entityResource.queue_free()
 		self.queue_free()
 		return true
+	return false
 		
 
 func _init(position : Vector3):

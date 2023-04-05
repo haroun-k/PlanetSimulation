@@ -26,8 +26,8 @@ class WFC_Rule :
 var wavefncollapse_Iundefined : Dictionary = {
 
 	TERRAIN_TYPE.WATER : WFC_Rule.new({ TERRAIN_TYPE.GRASS : 0.2, TERRAIN_TYPE.MUD : 0.8 }, []),
-	TERRAIN_TYPE.GRASS : WFC_Rule.new({ TERRAIN_TYPE.GRASS : 0.9, TERRAIN_TYPE.MUD : 0.1 }, []),
-	TERRAIN_TYPE.MUD : WFC_Rule.new({ TERRAIN_TYPE.GRASS : 0.2, TERRAIN_TYPE.MUD : 0.8 }, []),
+	TERRAIN_TYPE.GRASS : WFC_Rule.new({ TERRAIN_TYPE.GRASS : 0.95, TERRAIN_TYPE.MUD : 0.05 }, []),
+	TERRAIN_TYPE.MUD : WFC_Rule.new({ TERRAIN_TYPE.GRASS : 0.1, TERRAIN_TYPE.MUD : 0.9 }, []),
 	
 }
 
@@ -61,11 +61,11 @@ var wfc_updates : Dictionary = {
 func get_color():
 	match terrainType :
 		TERRAIN_TYPE.GRASS :
-			return Color.GREEN#.lerp(Color.DARK_GREEN,clampf((distanceFromWater-1)/5.,0,1))
+			return Color.PALE_GREEN#.lerp(Color.DARK_GREEN,clampf((distanceFromWater-1)/5.,0,1))
 		TERRAIN_TYPE.WATER :
-			return Color.DODGER_BLUE
+			return Color.LIGHT_SEA_GREEN
 		TERRAIN_TYPE.MUD :
-			return Color.GOLDENROD
+			return Color.DIM_GRAY
 		TERRAIN_TYPE.UNDEFINED :
 			return Color.BLACK
 

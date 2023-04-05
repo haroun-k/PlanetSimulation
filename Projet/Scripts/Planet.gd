@@ -1,25 +1,21 @@
 extends Node3D
 @onready var icosphere = get_node("WorldMesh")
 @export var agents : Array[Agent]
+@export var speciesDictionary : Dictionary
+@onready var avgNbSpecies : int = 5
+@onready var nbSpecies : int = 0
 
 func clear_simulation() : 
 	for agent in agents :
 		agent.queue_free()
 	agents.clear()
 
-func reproduire_agents():
-	var agents_reproduisibles = agents.filter( func(a) : return a.selfData.ticksSinceReproduced > 200)
-	for agent in agents_reproduisibles :
-		for agent2 in agents_reproduisibles :
-			if agent!=agent2 and agent2.selfData.position == agent.selfData.position :
-					agents_reproduisibles.erase(agent)
-					agents_reproduisibles.erase(agent2)
-					
-					var newAg=Agent.new(icosphere, agent.selfData.position)
-					agents.push_back(newAg)
-					add_child(newAg)
+func regulate_agents():
+	if randf()<(1-(clamp(nbSpecies/avgNbSpecies,0,1) - 0.0001))/100 :
+		spawn_new_agent()
 
 func update_agents():
+	regulate_agents()
 	for agent in agents:
 		agent.update()
 		if agent.is_dead() or agents.size()>1000 :
@@ -33,14 +29,26 @@ func update_world():
 	icosphere.update()
 	icosphere.worldResource.spawn_entities(self)
 	
-	
-func init_agents():
-	for _i in 50:
-		var randPos = icosphere.worldResource.centersNeighboursDictionary.keys().pick_random()
-		if icosphere.worldResource.tilesData[icosphere.worldResource.get_point_index_ordered(randPos)].terrainType!=TileResource.TERRAIN_TYPE.WATER :
-			var newAg=Agent.new(icosphere, randPos)
-			agents.push_back(newAg)
-			add_child(newAg)
+#
+#func spawn_new_agents():
+#	for _i in 70:
+#		var randPos = icosphere.worldResource.centersNeighboursDictionary.keys().pick_random()
+#		if icosphere.worldResource.tilesData[icosphere.worldResource.get_point_index_ordered(randPos)].terrainType!=TileResource.TERRAIN_TYPE.WATER :
+#			var newAg=Agent.new(icosphere, randPos)
+#			agents.push_back(newAg)
+#			add_child(newAg)
+func spawn_new_agent():
+	var randArray = icosphere.worldResource.centersNeighboursDictionary.keys()
+	randArray.shuffle()
+	for cent in randArray :
+		if icosphere.worldResource.myAstar.is_point_disabled(icosphere.worldResource.get_point_index_ordered(cent)) :
+			for centNeighbour in icosphere.worldResource.centersNeighboursDictionary[cent] :
+				if not icosphere.worldResource.myAstar.is_point_disabled(icosphere.worldResource.get_point_index_ordered(centNeighbour)) :
+					var newAg=Agent.new(icosphere, centNeighbour, nbSpecies)
+					agents.push_back(newAg)
+					add_child(newAg)
+					nbSpecies+=1
+					return
 
 func init_world():
 	icosphere.init_icosphere()
@@ -72,7 +80,6 @@ func _ready() :
 
 func init_simulation():
 	init_world()
-	init_agents()
 	run_ticks()
 
 
