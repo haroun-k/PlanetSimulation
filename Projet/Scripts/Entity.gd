@@ -21,7 +21,13 @@ func init_entity(res : EntityResource):
 		res.ENTITY_TYPE.BUSH :
 			scale=Vector3(0.1,0.1,0.1)
 
-
+func eat():
+	entityResource.quantity-=1
+	if entityResource.quantity==0 : 
+		entityResource.queue_free()
+		self.queue_free()
+		return true
+		
 
 func _init(position : Vector3):
 	entityResource = EntityResource.new()

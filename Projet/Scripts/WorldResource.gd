@@ -1,5 +1,28 @@
 class_name WorldResource extends Resource
 
+class SetFile :
+
+	var file : Array
+
+	func _init():
+		self.file = []
+
+	func enfiler(e : TileResource):
+		if e.isUndefined() && e not in self.file:
+			self.file.push_back(e)
+			
+	func enfiler_unchecked(e : TileResource):
+		self.file.push_back(e)
+
+	func defiler():
+		if self.file.size() > 0 :
+			return self.file.pop_front()
+		else :
+			return null
+
+	func est_vide():
+		return self.file.size() == 0
+
 @export var resolution :int
 @export var seed :int
 @export var waterHeight : float
@@ -28,19 +51,45 @@ func get_point_index_ordered(center : Vector3) :
 	return centersDictionary.keys().find(center)
 
 func init_world():
-	entities.resize(points.size())
-	tilesData.clear()
-	for i in range(centersDictionary.size()) :
-		tilesData.push_back(TileResource.new())
-		tilesData[i].tile_position=centersDictionary.keys()[i]
-		tilesData[i].init_tile(waterHeight)
 	
+	var tiles_a_traiter = SetFile.new()
+	tilesData.clear()
+	
+	
+	entities.resize(points.size())
+	
+	
+	var ki = 0
+	var clefs = centersDictionary.keys()
+	for k in clefs :
+		tilesData.push_back(TileResource.new())
+		tilesData[ki].tile_position=k
+		tilesData[ki].init_tile(waterHeight)
+		ki+=1
+	ki = 0	
+		
 	for i in range(centersNeighboursDictionary.size()) :
+		var voisins = centersNeighboursDictionary[clefs[i]]
 		tilesData[i].neighbours=[
-								tilesData[get_point_index_ordered(centersNeighboursDictionary[centersDictionary.keys()[i]][0])],
-								tilesData[get_point_index_ordered(centersNeighboursDictionary[centersDictionary.keys()[i]][1])],
-								tilesData[get_point_index_ordered(centersNeighboursDictionary[centersDictionary.keys()[i]][2])]
+								tilesData[get_point_index_ordered(voisins[0])],
+								tilesData[get_point_index_ordered(voisins[1])],
+								tilesData[get_point_index_ordered(voisins[2])]
 								]
+
+		if tilesData[i].isWater() :
+			for n in tilesData[i].neighbours :
+				tiles_a_traiter.enfiler(n)
+		else: #au cas ou pour que toutes les cases soient traitees
+			tiles_a_traiter.enfiler(tilesData[i])
+
+	while not tiles_a_traiter.est_vide() :
+		var tile = tiles_a_traiter.defiler()
+		if tile.collapse_tile():
+			tiles_a_traiter.enfiler_unchecked(tile)
+	for t in tilesData:
+		if t.isUndefined():
+			t.collapse_tile()
+
 	init_asta()
 func get_entities_on_tile(position: Vector3):
 	var arr := []
@@ -60,7 +109,7 @@ func spawn_entities(world : Node3D):
 	for td in tilesData :
 		if td.terrainType == TileResource.TERRAIN_TYPE.GRASS :
 			var entityPos = centersDictionary[td.tile_position].pick_random()
-			if randf()<(1-(amountOfTrees/maxAmountOfTrees) )/10000. and entities[get_edge_index(entityPos)]== null:
+			if randf()<(1-(amountOfTrees/maxAmountOfTrees))/10000. and entities[get_edge_index(entityPos)]== null:
 				amountOfTrees+=1
 				init_entity(entityPos)
 				world.add_child(entities[get_edge_index(entityPos)])

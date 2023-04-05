@@ -4,8 +4,8 @@ class_name AgentData extends Resource
 @export var current_path : Array
 @export var current_direction : Vector3
 @export var current_position : Vector3
-
-@export var cooldown_reproduction : int
+@export var lookForEntityCooldown : int 
+@export var ticksSinceReproduced : int
 @export var age : int
 @export var view_distance : float
 @export var agentMesh : MeshInstance3D

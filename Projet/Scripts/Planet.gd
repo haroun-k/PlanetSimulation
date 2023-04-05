@@ -8,7 +8,7 @@ func clear_simulation() :
 	agents.clear()
 
 func reproduire_agents():
-	var agents_reproduisibles = agents.filter( func(a) : return a.selfData.cooldown_reproduction == 0)
+	var agents_reproduisibles = agents.filter( func(a) : return a.selfData.ticksSinceReproduced > 200)
 	for agent in agents_reproduisibles :
 		for agent2 in agents_reproduisibles :
 			if agent!=agent2 and agent2.selfData.position == agent.selfData.position :
@@ -45,24 +45,30 @@ func init_agents():
 func init_world():
 	icosphere.init_icosphere()
 	icosphere.worldResource.maxAmountOfTrees=100
-	
-const tick_duration := 0
-signal ticked
+
+
+
+const agent_tick_interval := 1./120 # max 1/120 pour 120fps, ou 1/60 pour 60 fps
+const world_tick_interval := 1./110
+signal ticked_world
+signal ticked_agents
+
 func run_ticks() :
 	while true :
-		if tick_duration<=1./120 :
-			await get_tree().process_frame
-		else :
-			await get_tree().create_timer(tick_duration).timeout
+		await tickworld()
+		await tickagents()
 		
-		ticked.emit()
-
-
+func tickworld():
+	await get_tree().create_timer(world_tick_interval).timeout
+	ticked_world.emit()
+func tickagents():
+	await get_tree().create_timer(agent_tick_interval).timeout
+	ticked_agents.emit()
 # Called when the node enters the scene tree for the first time.
 
 func _ready() :
-	ticked.connect(update_world)
-	ticked.connect(update_agents)
+	ticked_world.connect(update_world)
+	ticked_agents.connect(update_agents)
 
 func init_simulation():
 	init_world()
