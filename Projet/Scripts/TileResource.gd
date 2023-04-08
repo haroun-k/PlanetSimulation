@@ -61,7 +61,7 @@ var wfc_updates : Dictionary = {
 func get_color():
 	match terrainType :
 		TERRAIN_TYPE.GRASS :
-			return Color.PALE_GREEN#.lerp(Color.DARK_GREEN,clampf((distanceFromWater-1)/5.,0,1))
+			return Color(34/255.0, 127/255.0, 25/255.0)#.lerp(Color.DARK_GREEN,clampf((distanceFromWater-1)/5.,0,1))
 		TERRAIN_TYPE.WATER :
 			return Color.LIGHT_SEA_GREEN
 		TERRAIN_TYPE.MUD :
@@ -161,11 +161,14 @@ func update_tile(waterHeight : float):
 		terrainType = TERRAIN_TYPE.WATER
 		for n in neighbours:
 			n.collapse_tile()
-	
+			
 	else:
 		if self.isWater():
 			self.terrainType = self.original_terrainType
+			
 			self.collapse_tile()
 
 	for i in neighbours :
 		i.distanceFromWater=min(i.distanceFromWater,distanceFromWater+1)
+		
+	

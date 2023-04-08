@@ -11,16 +11,17 @@ func clear_simulation() :
 	agents.clear()
 
 func regulate_agents():
-	if randf()<(1-(clamp(nbSpecies/avgNbSpecies,0,1) - 0.0001))/100 :
-		spawn_new_agent()
+	if randf()<(1-(clamp(speciesDictionary.values().size()/avgNbSpecies,0,1) - 0.0001))/100 :
+		spawn_new_specie()
 
 func update_agents():
 	regulate_agents()
 	for agent in agents:
 		agent.update()
 		if agent.is_dead() or agents.size()>1000 :
-			agents.erase(agent)
+			speciesDictionary.erase(agent)
 			agent.queue_free()
+			agents.erase(agent)
 #			self.remove_child(agent)
 			
 #	reproduire_agents()
@@ -28,7 +29,7 @@ func update_agents():
 func update_world():
 	icosphere.update()
 	icosphere.worldResource.spawn_entities(self)
-	
+	$Atmosphere.update_atmosphere()
 #
 #func spawn_new_agents():
 #	for _i in 70:
@@ -37,17 +38,22 @@ func update_world():
 #			var newAg=Agent.new(icosphere, randPos)
 #			agents.push_back(newAg)
 #			add_child(newAg)
-func spawn_new_agent():
+func spawn_new_specie():
 	var randArray = icosphere.worldResource.centersNeighboursDictionary.keys()
 	randArray.shuffle()
 	for cent in randArray :
 		if icosphere.worldResource.myAstar.is_point_disabled(icosphere.worldResource.get_point_index_ordered(cent)) :
 			for centNeighbour in icosphere.worldResource.centersNeighboursDictionary[cent] :
 				if not icosphere.worldResource.myAstar.is_point_disabled(icosphere.worldResource.get_point_index_ordered(centNeighbour)) :
-					var newAg=Agent.new(icosphere, centNeighbour, nbSpecies)
-					agents.push_back(newAg)
+					var newAg=Agent.new(self, centNeighbour, nbSpecies)
+					if newAg.selfData.canReproduceAlone==false : 
+						var mate = Agent.new(self,centNeighbour, nbSpecies, newAg)
+						add_child(mate)
+						agents.push_back(mate)
 					add_child(newAg)
+					agents.push_back(newAg)
 					nbSpecies+=1
+					
 					return
 
 func init_world():

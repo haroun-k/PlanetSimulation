@@ -93,6 +93,7 @@ func init_world():
 	updateTilesArray=tilesData.duplicate(true)
 	updateTilesArray.shuffle()
 	generate_astar()
+	
 func get_entities_on_tile(position: Vector3):
 	var arr := []
 	for pts in centersDictionary[position]:
@@ -133,8 +134,13 @@ func generate_astar():
 	myAstar=myastar
 
 func update_world_resource():
-	for i in updateTilesArray : i.update_tile(waterHeight)
-	
+	for i in updateTilesArray :
+		var previousType=i.terrainType
+		i.update_tile(waterHeight)
+		if i.terrainType==TileResource.TERRAIN_TYPE.WATER and previousType!=TileResource.TERRAIN_TYPE.WATER :
+			myAstar.set_point_disabled(get_point_index_ordered(i.tile_position))
+		elif i.terrainType!=TileResource.TERRAIN_TYPE.WATER and previousType==TileResource.TERRAIN_TYPE.WATER :
+			myAstar.set_point_disabled(get_point_index_ordered(i.tile_position),false)
 	for entity in entities:
 		if entity !=null :
 			var toDelete = true
@@ -144,6 +150,7 @@ func update_world_resource():
 			if toDelete : 
 				entity.queue_free()
 				amountOfTrees-=1
+		
 
 func get_world():
 
