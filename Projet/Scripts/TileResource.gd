@@ -138,7 +138,11 @@ func atmosphere_effects(temperature : float, probas : Dictionary):
 		probas[TERRAIN_TYPE.TALL_GRASS] -= temp_diff / 400.0
 
 	const TEMP_ASSECHEMENT = 35.0
-	probas[TERRAIN_TYPE.MUD] += clampf(temperature / TEMP_ASSECHEMENT, 0.0, 4.0)
+	probas[TERRAIN_TYPE.MUD] += clampf((temperature - TEMP_ASSECHEMENT)/10.0, 0.0, 10.0)
+	probas[TERRAIN_TYPE.GRASS] -= clampf((temperature - TEMP_ASSECHEMENT)/10.0, 0.0, 10.0)
+	probas[TERRAIN_TYPE.TALL_GRASS] -= clampf((temperature - TEMP_ASSECHEMENT)/10.0, 0.0, 5.0)
+	probas[TERRAIN_TYPE.GRASS] = max(probas[TERRAIN_TYPE.GRASS], 0.0)
+	probas[TERRAIN_TYPE.TALL_GRASS] = max(probas[TERRAIN_TYPE.TALL_GRASS], 0.0)
 
 func collapse_tile(temperature : float) -> bool:
 
