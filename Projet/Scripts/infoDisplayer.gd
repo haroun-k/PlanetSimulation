@@ -8,7 +8,7 @@ func _ready():
 	
 	nb_fps = 0
 	nb_agents = 0
-	planete = get_parent()
+	planete = get_tree().get_current_scene()
 	set_text("")
 	self.add_theme_color_override("font_color", Color(1,1,255,1))
 
@@ -19,4 +19,8 @@ func _process(delta):
 	nb_fps = Performance.get_monitor(Performance.TIME_FPS)
 	nb_agents = planete.agents.size()
 	
-	set_text("FPS: " + str(nb_fps) + " \nAgents: " + str(nb_agents))
+	set_text("FPS: " + str(nb_fps) + 
+	"\n\nAgents: " + str(nb_agents) +
+	"\nTemperature : " + str($"%Atmosphere".temperature) + "°" +
+	"\nNiveau de l'eau : " + str(int($"%Atmosphere".calculate_water() * 100)) + "m"
+	)
