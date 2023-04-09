@@ -18,9 +18,12 @@ func _process(delta):
 	
 	nb_fps = Performance.get_monitor(Performance.TIME_FPS)
 	nb_agents = planete.agents.size()
-	
-	set_text("FPS: " + str(nb_fps) + 
-	"\n\nAgents: " + str(nb_agents) +
-	"\nTemperature : " + str($"%Atmosphere".temperature) + "°" +
-	"\nNiveau de l'eau : " + str(int($"%Atmosphere".calculate_water() * 100)) + "m"
+	var texte_agent = "Aucun"
+	if planete.target != null :
+		texte_agent = planete.target.toString()
+	set_text("FPS: " + str(nb_fps)
+	+ "\n\nAgents: " + str(nb_agents)
+	+ "\nTemperature : " + str($"%Atmosphere".temperature) + "°"
+	+ "\nNiveau de l'eau : " + str(int($"%Atmosphere".calculate_water() * 100)) + "m"
+	+ "\nAgent visé : " + texte_agent
 	)
