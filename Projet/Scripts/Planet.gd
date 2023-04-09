@@ -104,3 +104,32 @@ func _ui_button_pressed(hide:bool):
 		needToUpdate=false
 	await $Ui/Panel/MenuAnimationPlayer.animation_finished
 	can=true
+
+
+
+
+var target : Agent = null
+#Potentiel raycasting
+func _unhandled_input(event):
+	if event is InputEventMouseButton:
+		if event.is_pressed():
+			
+			var camera = get_node("SweetCamera").get_node("Camera3D")
+			var from = camera.project_ray_origin(event.position)
+			var to = from + camera.project_ray_normal(event.position) * 10000
+			
+			var space_state = get_world_3d().direct_space_state
+			var query = PhysicsRayQueryParameters3D.create(from,to)
+			var result = space_state.intersect_ray(query)
+			
+			target = null
+			if result:	
+				#Find the closest agent
+				var minDist = 0.3
+				var dist
+				for a in agents:
+					dist = result.position.distance_to(a.selfData.current_position)
+					if dist < minDist:
+						minDist = dist
+						target = a
+	
