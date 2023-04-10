@@ -57,7 +57,6 @@ func init_world(at):
 	self.atmosphere = at
 	var tiles_a_traiter = SetFile.new()
 	tilesData.clear()
-	print(points.size())
 	entities.resize(points.size())
 	var ki = 0
 	var clefs = centersDictionary.keys()
@@ -120,7 +119,6 @@ func spawn_steak(world : Node3D, deathPos:Vector3, specieOrigin :int):
 var spree
 func spawn_entities(world : Node3D):
 	for td in tilesData :
-		if spree : print(td.terrainType)
 		if td.terrainType == TileResource.TERRAIN_TYPE.TALL_GRASS :
 			var entityPos = centersDictionary[td.tile_position].pick_random()
 			if ( randf()<(1-(amountOfVegetation/maxAmountOfVegetation))/1000. if (not spree) else amountOfVegetation<maxAmountOfVegetation ) and entities[get_edge_index(entityPos)]== null:
@@ -200,7 +198,7 @@ func update_world_resource(purge : bool=false, startAFire:bool=false):
 					toDelete=false
 				elif entity.entityResource.entityType==EntityResource.ENTITY_TYPE.CARROT and tilesData[get_point_index_ordered(surroundingCenters)].terrainType==TileResource.TERRAIN_TYPE.TALL_GRASS :
 					toDelete=false
-				elif entity.entityResource.entityType==EntityResource.ENTITY_TYPE.TREE and tilesData[get_point_index_ordered(surroundingCenters)].terrainType==TileResource.TERRAIN_TYPE.GRASS :
+				elif (entity.entityResource.entityType==EntityResource.ENTITY_TYPE.TREE or entity.entityResource.entityType==EntityResource.ENTITY_TYPE.BUSH) and tilesData[get_point_index_ordered(surroundingCenters)].terrainType==TileResource.TERRAIN_TYPE.GRASS :
 					toDelete=false
 				elif (entity.entityResource.entityType==EntityResource.ENTITY_TYPE.STEAK ):#and tilesData[get_point_index_ordered(surroundingCenters)].terrainType!=TileResource.TERRAIN_TYPE.WATER) :
 					entity.entityResource.steakCountdown-=1

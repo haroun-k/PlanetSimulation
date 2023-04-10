@@ -1,6 +1,7 @@
 class_name AgentData extends Resource
 
 @export var appareancesArray : Array
+@export var previousPos : Vector3
 
 @export var age : int
 @export var adultAge : int
@@ -56,7 +57,7 @@ func randomize_genes():
 	metabolismSpeed=randi_range(1,4)
 	carnivor=true if randi_range(0,1)==1 else false
 	agressivity=randf()
-	view_distance=randf_range(0.1,2)
+	view_distance=randf_range(0.3,2)
 	killed=false
 	onFire=false
 

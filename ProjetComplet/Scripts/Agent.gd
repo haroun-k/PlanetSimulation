@@ -60,9 +60,8 @@ func rotate_towards_direction():
 	if axis != Vector3.ZERO and not is_nan(angle) : 
 		global_position = rotate_around_axis(global_position,axis.normalized(), angle / (50*(10/selfData.speed) )  )
 	
-	var angle2 = acos(transform.basis.x.dot(selfData.current_path[0])/ ( transform.basis.x.length()* selfData.current_path[0]) .length())
 	
-	rotate(position.normalized(),angle2)
+	if get_child(0).global_position != selfData.previousPos : get_child(0).look_at_from_position(get_child(0).global_position,selfData.previousPos, get_child(0).global_position )
 
 
 func rotate_around_axis(pos:Vector3, axis:Vector3, angle:float):
@@ -96,6 +95,7 @@ var closestStranger : Agent =  null
 
 
 func update():
+	selfData.previousPos=get_child(0).global_position
 	if selfData.lookForEntityCooldown<0 and world.amountOfVegetation!=0  :
 		closestFoodPos=get_nearest_entity_position()
 		selfData.lookForEntityCooldown=100
@@ -197,12 +197,13 @@ func auto_move_ea():
 					else : 
 						selfData.current_path = world.myAstar.get_point_path(world.get_point_index_ordered(selfData.current_position), world.get_point_index_ordered(closestFoodPos))
 						selfData.current_path.pop_front()
+			else : take_random_direction()
 
 	if selfData.current_path.size()==0:
 #		print("je met un point sur moi meme pour eviter des bugs")
 		selfData.current_path=[selfData.current_position]
 	rotate_towards_direction()
-	get_child(0).get_child(get_child(0).get_child_count()-1).global_position=selfData.current_path[selfData.current_path.size()-1]
+#	get_child(0).get_child(get_child(0).get_child_count()-1).global_position=selfData.current_path[selfData.current_path.size()-1]
 	update_position()
 #	get_child(0).rotate_object_local(transform.basis.y.normalized(), randf() ) #acos(get_rotation().dot(selfData.current_path[0])/(get_rotation().length()*selfData.current_path[0].length()))
 
@@ -265,15 +266,12 @@ func paths_to_objs_array(path):
 func _ready():
 	selfData.agentScene.rotate(Vector3(1,0,0),-90)
 	
-	selfData.directionMesh = MeshInstance3D.new()
-	selfData.directionMesh.mesh=BoxMesh.new()
-	selfData.directionMesh.set_scale(Vector3(0.5, 1, 0.5))
-
-	
+#	selfData.directionMesh = MeshInstance3D.new()
+#	selfData.directionMesh.mesh=BoxMesh.new()
+#	selfData.directionMesh.set_scale(Vector3(0.5, 1, 0.5))
 	margin=0.03
 	spring_length=3000
-
-	get_child(0).add_child(selfData.directionMesh)
+#	get_child(0).add_child(selfData.directionMesh)
 	look_at(global_position*2)
 	
 	update_position()
