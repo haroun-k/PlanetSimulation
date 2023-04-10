@@ -1,0 +1,21 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://c05dynxllfe7i"
+path="res://.godot/imported/UVIcosphere.obj-c68074c99716aafb2c7fdb45ec77f566.mesh"
+
+[deps]
+
+files=["res://.godot/imported/UVIcosphere.obj-c68074c99716aafb2c7fdb45ec77f566.mesh"]
+
+source_file="res://Objects/UVIcosphere.obj"
+dest_files=["res://.godot/imported/UVIcosphere.obj-c68074c99716aafb2c7fdb45ec77f566.mesh", "res://.godot/imported/UVIcosphere.obj-c68074c99716aafb2c7fdb45ec77f566.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true

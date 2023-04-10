@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://cb8pjyryk2f2d"
+path="res://.godot/imported/Press Start  8 bit, chiptune, rpg.mp3-51cb32f41c7146edf6feb1fe40c8d45b.mp3str"
+
+[deps]
+
+source_file="res://Audio/Press Start  8 bit, chiptune, rpg.mp3"
+dest_files=["res://.godot/imported/Press Start  8 bit, chiptune, rpg.mp3-51cb32f41c7146edf6feb1fe40c8d45b.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
