@@ -43,6 +43,8 @@ func clear_simulation() :
 	speciesDictionary.clear()
 	uniqueSpeciesNb.clear()
 	agents.clear()
+	for ent in icosphere.worldResource.entities :
+		if ent!=null : ent.queue_free()
 	icosphere.worldResource.entities.clear()
 
 func regulate_agents():
@@ -88,7 +90,7 @@ func spawn_new_specie():
 func init_world():
 	$"%Atmosphere".init_atmosphere()
 	icosphere.init_icosphere()
-	icosphere.worldResource.maxAmountOfVegetation=12*(2**icosphere.worldResource.resolution)+ ( 0 if icosphere.worldResource.resolution>2 else 0 )
+	icosphere.worldResource.maxAmountOfVegetation=12*(2**icosphere.worldResource.resolution)+ ( 200 if icosphere.worldResource.resolution>2 else 0 )
 
 
 
