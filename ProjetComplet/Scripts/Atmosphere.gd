@@ -1,7 +1,7 @@
 extends MeshInstance3D
 var temperature = 0
-var temp_min = -50
-var temp_max = 100
+var temp_min = -10
+var temp_max = 50
 var agents
 var entities
 var Mat
@@ -20,12 +20,12 @@ func init_atmosphere():
 	self.entities = get_parent().get_node("WorldMesh").worldResource.entities
 	
 func changer_temp():
-	self.temperature = $"%WorldMesh".worldResource.amountOfVegetation/ (1000.0/(agents.size()+1)   ) + (agents.size()/15. - $"%WorldMesh".worldResource.amountOfVegetation/3.)
-	self.temperature = clamp(temperature/10+ temp_bias + snapped( (sin(Time.get_ticks_msec() / 1000.0) * 0.5), 0.1),temp_min,temp_max)
+	self.temperature = $"%WorldMesh".worldResource.amountOfVegetation/ (1000.0/(agents.size()+1)   ) + (agents.size()/2-($"%WorldMesh".worldResource.amountOfVegetation/80))
+	self.temperature = clamp(temperature/3 + (sin(Time.get_ticks_msec() / 4000.0) * 3)+ (sin(Time.get_ticks_msec() / 8000.0) * 6)+ (sin(Time.get_ticks_msec() / 30000.0) * 10) + 9 + temp_bias    ,temp_min,temp_max)
 
 	
 func calculate_water():
-	return 1.96 + (self.temperature/15000.0) + water_bias
+	return 1.96 + (self.temperature/15000.0) + water_bias #+ (sin(Time.get_ticks_msec() / 4000.0) * 3) 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func update_atmosphere():
@@ -36,3 +36,4 @@ func update_atmosphere():
 func _process(delta):
 	self.water_bias = $"%waterSlider".value / 1000.0	
 	self.temp_bias = $"%tempSlider".value 
+

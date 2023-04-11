@@ -136,7 +136,7 @@ func atmosphere_effects(temperature : float, probas : Dictionary):
 		probas[TERRAIN_TYPE.GRASS] -= temp_diff / 400.0
 		probas[TERRAIN_TYPE.TALL_GRASS] -= temp_diff / 400.0
 
-	const TEMP_ASSECHEMENT = 80.0
+	const TEMP_ASSECHEMENT = 35.0
 	probas[TERRAIN_TYPE.MUD] += clampf((temperature - TEMP_ASSECHEMENT)/5.0, 0.0, 20.0)
 	probas[TERRAIN_TYPE.GRASS] = max(probas[TERRAIN_TYPE.GRASS], 0.0)
 	probas[TERRAIN_TYPE.TALL_GRASS] = max(probas[TERRAIN_TYPE.TALL_GRASS], 0.0)
