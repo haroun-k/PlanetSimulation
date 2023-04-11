@@ -25,7 +25,7 @@ var wfc_Iundefined : Dictionary = {
 	TERRAIN_TYPE.GRASS : WFC_Rule.new({TERRAIN_TYPE.GRASS : 0.7, TERRAIN_TYPE.MUD : 0.3}, []),
 	TERRAIN_TYPE.TALL_GRASS : WFC_Rule.new({TERRAIN_TYPE.GRASS : 0.7, TERRAIN_TYPE.TALL_GRASS : 0.3}, [TERRAIN_TYPE.MUD]),
 	TERRAIN_TYPE.MUD : WFC_Rule.new({TERRAIN_TYPE.MUD : 0.9, TERRAIN_TYPE.GRASS : 0.1}, []),
-	TERRAIN_TYPE.WATER : WFC_Rule.new({TERRAIN_TYPE.GRASS : 0.5, TERRAIN_TYPE.MUD : 0.5}, []),
+	TERRAIN_TYPE.WATER : WFC_Rule.new({TERRAIN_TYPE.GRASS : 0.5, TERRAIN_TYPE.MUD : 0.5}, [TERRAIN_TYPE.TALL_GRASS]),
 
 }
 
@@ -34,26 +34,26 @@ var wfc_Ugrass : Dictionary = {
 
 	TERRAIN_TYPE.GRASS : WFC_Rule.new({TERRAIN_TYPE.GRASS : 1.0}, []),
 	TERRAIN_TYPE.TALL_GRASS : WFC_Rule.new({TERRAIN_TYPE.GRASS : 0.99, TERRAIN_TYPE.TALL_GRASS : 0.01}, [TERRAIN_TYPE.MUD]),
-	TERRAIN_TYPE.MUD : WFC_Rule.new({TERRAIN_TYPE.MUD : 0.3, TERRAIN_TYPE.GRASS : 0.7}, []),
+	TERRAIN_TYPE.MUD : WFC_Rule.new({TERRAIN_TYPE.MUD : 0.2, TERRAIN_TYPE.GRASS : 0.8}, []),
 	TERRAIN_TYPE.WATER : WFC_Rule.new({TERRAIN_TYPE.GRASS : 0.97, TERRAIN_TYPE.TALL_GRASS : 0.03}, []),
 
 }
 
 var wfc_Utall_grass : Dictionary = {
 
-	TERRAIN_TYPE.GRASS : WFC_Rule.new({TERRAIN_TYPE.TALL_GRASS : 0.65, TERRAIN_TYPE.GRASS : 0.3, TERRAIN_TYPE.MUD : 0.05}, []),
-	TERRAIN_TYPE.TALL_GRASS : WFC_Rule.new({TERRAIN_TYPE.GRASS : 0.7, TERRAIN_TYPE.TALL_GRASS : 0.3}, [TERRAIN_TYPE.MUD]),
+	TERRAIN_TYPE.GRASS : WFC_Rule.new({TERRAIN_TYPE.TALL_GRASS : 0.3, TERRAIN_TYPE.GRASS : 0.7, TERRAIN_TYPE.MUD : 0.05}, []),
+	TERRAIN_TYPE.TALL_GRASS : WFC_Rule.new({TERRAIN_TYPE.GRASS : 0.4, TERRAIN_TYPE.TALL_GRASS : 0.6}, [TERRAIN_TYPE.MUD]),
 	TERRAIN_TYPE.MUD : WFC_Rule.new({TERRAIN_TYPE.GRASS : 0.95, TERRAIN_TYPE.MUD : 0.05}, []),
-	TERRAIN_TYPE.WATER : WFC_Rule.new({TERRAIN_TYPE.TALL_GRASS : 0.9, TERRAIN_TYPE.GRASS : 0.1}, [TERRAIN_TYPE.MUD]),
+	TERRAIN_TYPE.WATER : WFC_Rule.new({TERRAIN_TYPE.TALL_GRASS : 0.5, TERRAIN_TYPE.GRASS : 0.5}, []),
 
 }
 
 var wfc_Umud : Dictionary = {
 
-	TERRAIN_TYPE.GRASS : WFC_Rule.new({TERRAIN_TYPE.GRASS : 0.6, TERRAIN_TYPE.MUD : 0.4}, []),
-	TERRAIN_TYPE.TALL_GRASS : WFC_Rule.new({TERRAIN_TYPE.GRASS : 0.8, TERRAIN_TYPE.TALL_GRASS : 0.2}, []),
-	TERRAIN_TYPE.MUD : WFC_Rule.new({TERRAIN_TYPE.MUD : 1.0}, []),
-	TERRAIN_TYPE.WATER : WFC_Rule.new({TERRAIN_TYPE.GRASS : 1.0}, [TERRAIN_TYPE.MUD]),
+	TERRAIN_TYPE.GRASS : WFC_Rule.new({TERRAIN_TYPE.GRASS : 0.7, TERRAIN_TYPE.MUD : 0.3}, [TERRAIN_TYPE.TALL_GRASS]),
+	TERRAIN_TYPE.TALL_GRASS : WFC_Rule.new({TERRAIN_TYPE.GRASS : 0.8, TERRAIN_TYPE.TALL_GRASS : 0.2}, [TERRAIN_TYPE.TALL_GRASS]),
+	TERRAIN_TYPE.MUD : WFC_Rule.new({TERRAIN_TYPE.MUD : 0.7, TERRAIN_TYPE.GRASS : 0.3}, [TERRAIN_TYPE.TALL_GRASS]),
+	TERRAIN_TYPE.WATER : WFC_Rule.new({TERRAIN_TYPE.GRASS : 1.0}, [TERRAIN_TYPE.TALL_GRASS, TERRAIN_TYPE.GRASS]),
 
 }
 
@@ -112,21 +112,19 @@ func init_tile(waterHeight : float):
 
 func atmosphere_effects(temperature : float, probas : Dictionary):
 
-	const TEMP_IDEAL_HERBE = 24.0
-
-	if probas[TERRAIN_TYPE.GRASS] == 0.0 and probas[TERRAIN_TYPE.TALL_GRASS] == 0.0 :
-		return
+	const TEMP_IDEAL_HERBE = 25.0
 
 	if self.terrainType == TERRAIN_TYPE.GRASS :
 		probas[TERRAIN_TYPE.GRASS] += self.extra_data / 10.0
-		probas[TERRAIN_TYPE.GRASS] += self.distanceFromWater
-		probas[TERRAIN_TYPE.TALL_GRASS] += self.distanceFromWater  * 2.0
+		probas[TERRAIN_TYPE.GRASS] -= self.distanceFromWater
 
 	if self.terrainType == TERRAIN_TYPE.TALL_GRASS :
-		probas[TERRAIN_TYPE.GRASS] += self.extra_data / 10.0
-		probas[TERRAIN_TYPE.GRASS] += 2.0 - self.distanceFromWater*2.0
-		probas[TERRAIN_TYPE.TALL_GRASS] += 2.0 - self.distanceFromWater
-
+		probas[TERRAIN_TYPE.TALL_GRASS] += self.extra_data / 10.0
+		probas[TERRAIN_TYPE.GRASS] -= 2.0 + self.distanceFromWater*2.0
+		probas[TERRAIN_TYPE.TALL_GRASS] -= 2.0 + self.distanceFromWater
+		
+	
+	probas[TERRAIN_TYPE.MUD] += (10.0 - distanceFromWater*2)
 	var temp_diff = abs(temperature - TEMP_IDEAL_HERBE)
 	if (temp_diff < 10.0) :
 		probas[TERRAIN_TYPE.GRASS] += 1.0 - temp_diff/50.0
@@ -140,10 +138,23 @@ func atmosphere_effects(temperature : float, probas : Dictionary):
 	probas[TERRAIN_TYPE.MUD] += clampf((temperature - TEMP_ASSECHEMENT)/5.0, 0.0, 20.0)
 	probas[TERRAIN_TYPE.GRASS] = max(probas[TERRAIN_TYPE.GRASS], 0.0)
 	probas[TERRAIN_TYPE.TALL_GRASS] = max(probas[TERRAIN_TYPE.TALL_GRASS], 0.0)
+		
+	var voisins_herbe = 0
+	for n in neighbours:
+		if n.isGrass() or n.isTallGrass():
+			voisins_herbe += 1
+	if voisins_herbe == 3:
+		probas[TERRAIN_TYPE.MUD]=0.0
+		probas[TERRAIN_TYPE.TALL_GRASS] += 1
+		
+	probas[TERRAIN_TYPE.GRASS] += voisins_herbe * 2
 	
+	if self.isMud():
+		probas[TERRAIN_TYPE.TALL_GRASS] = 0.0
+		
 	if not isUndefined() && not isWater():
-		probas[self.terrainType] += 1.0
-
+		probas[self.terrainType] += 7.0
+ 
 func collapse_tile(temperature : float) -> bool:
 
 	if terrainType == TERRAIN_TYPE.WATER :
@@ -177,11 +188,16 @@ func collapse_tile(temperature : float) -> bool:
 		return true
 
 	atmosphere_effects(temperature, probas)
+	
+	
 
-	if (isGrass() || isTallGrass()) && self.extra_data > 200 :
-		probas[TERRAIN_TYPE.TALL_GRASS] += probas[TERRAIN_TYPE.GRASS]
-		probas[TERRAIN_TYPE.GRASS] = 0
-		
+	if (isGrass() || isTallGrass()) :
+		if self.extra_data > 300 :
+			probas[TERRAIN_TYPE.TALL_GRASS] += probas[TERRAIN_TYPE.GRASS]
+			probas[TERRAIN_TYPE.GRASS] = 0
+		else:
+			probas[TERRAIN_TYPE.GRASS] += probas[TERRAIN_TYPE.TALL_GRASS]
+			probas[TERRAIN_TYPE.TALL_GRASS] = 0
 		
 	var tile_probas = []
 	for t in probas.keys():
