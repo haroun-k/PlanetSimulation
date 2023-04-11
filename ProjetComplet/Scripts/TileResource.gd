@@ -188,6 +188,7 @@ func shift_values(temperature : float, probas : Dictionary):
 func collapse_tile(temperature : float) -> bool:
 	#Si la case est de type WATER elle n'est pas à changer.
 	if terrainType == TERRAIN_TYPE.WATER :
+		# Renvois false indiquant qu'il ne faut pas replacer dans la file d'appels de worldResource cette case
 		return false
 
 	# Le Dictionnaire qui à des types associe des probabilités va servir à stocker la somme des chances de devenir de chaque type 
@@ -220,6 +221,7 @@ func collapse_tile(temperature : float) -> bool:
 			has_probas = true
 			break
 	if not has_probas:
+		# Renvois true indiquant qu'il faut replacer dans la file d'appels de worldResource cette case car les information disponibles ne permettent pas de définir son type
 		return true
 
 	# L'on applique les effets de la température de l'eau et du temps sur les probabilités selon la fonction 'shift_values()'
@@ -273,6 +275,7 @@ func collapse_tile(temperature : float) -> bool:
 		for n in neighbours :
 			n.distanceFromWater=min(n.distanceFromWater,distanceFromWater+1)
 
+	# Renvois false indiquant qu'il ne faut pas replacer dans la file d'appels de worldResource cette case
 	return false
 
 
