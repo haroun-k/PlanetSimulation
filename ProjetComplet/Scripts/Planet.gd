@@ -23,7 +23,7 @@ func _unhandled_input(event):
 			target = null
 			if result:	
 				#Find the closest agent
-				var minDist = 0.3
+				var minDist = 0.4
 				var dist
 				for a in agents:
 					dist = result.position.distance_to(a.selfData.current_position)

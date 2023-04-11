@@ -7,7 +7,7 @@ class_name Agent extends SpringArm3D
 const TR_types = TileResource.TERRAIN_TYPE
 
 func is_dead() -> bool:
-	return ( selfData.killed  or (selfData.age>selfData.maxAge or selfData.hunger>selfData.maxHunger or world.tilesData[world.get_point_index_ordered(selfData.current_position)].terrainType==TileResource.TERRAIN_TYPE.WATER) )
+	return ( is_nan(global_position.x) ) or ( selfData.killed  or (selfData.age>selfData.maxAge or selfData.hunger>selfData.maxHunger or world.tilesData[world.get_point_index_ordered(selfData.current_position)].terrainType==TileResource.TERRAIN_TYPE.WATER) )
 	
 func reproduce() -> Agent:
 	force_animation("Dance")
@@ -49,6 +49,7 @@ func eat(food):
 	if food is Entity : 
 		if food.entityResource.isOnFire : 
 			selfData.onFire=true
+			selfData.speed*=2
 		selfData.hunger-=food.eat(world)
 		
 func get_closest_center():
@@ -207,7 +208,7 @@ func auto_move_ea():
 #		print("je met un point sur moi meme pour eviter des bugs")
 		selfData.current_path=[selfData.current_position]
 	rotate_towards_direction()
-	get_child(0).get_child(get_child(0).get_child_count()-1).global_position=selfData.current_path[selfData.current_path.size()-1]
+#	get_child(0).get_child(get_child(0).get_child_count()-1).global_position=selfData.current_path[selfData.current_path.size()-1]
 	update_position()
 
 
@@ -226,7 +227,7 @@ func _init(wrld : Node3D, initialCenterPosition : Vector3, specieNumber : int, c
 	else :
 		selfData.age=0
 		selfData.baby=true
-		selfData.maxAge=copy.selfData.maxAge + (copy.selfData.maxAge/2*copy.selfData.reproductionVariations)
+		selfData.maxAge=copy.selfData.maxAge + (copy.selfData.maxAge/2.*copy.selfData.reproductionVariations)
 		selfData.adultAge=copy.selfData.adultAge + (copy.selfData.adultAge/2*copy.selfData.reproductionVariations)
 		selfData.hunger=0
 		selfData.maxHunger=copy.selfData.maxHunger + (copy.selfData.maxHunger/2*copy.selfData.reproductionVariations)
@@ -268,12 +269,12 @@ func paths_to_objs_array(path):
 func _ready():
 	selfData.agentScene.rotate(Vector3(1,0,0),-90)
 	
-	selfData.directionMesh = MeshInstance3D.new()
-	selfData.directionMesh.mesh=BoxMesh.new()
-	selfData.directionMesh.set_scale(Vector3(0.5, 1, 0.5))
+#	selfData.directionMesh = MeshInstance3D.new()
+#	selfData.directionMesh.mesh=BoxMesh.new()
+#	selfData.directionMesh.set_scale(Vector3(0.5, 1, 0.5))
 	margin=0.03
 	spring_length=3000
-	get_child(0).add_child(selfData.directionMesh)
+#	get_child(0).add_child(selfData.directionMesh)
 	look_at(global_position*2)
 	
 	update_position()
@@ -284,8 +285,7 @@ func _ready():
 
 func toString():
 	return(
-	" Specie n°" + str(selfData.specie) + ("- Baby" if selfData.baby else "- Adult")+(" Carnivorous" if selfData.carnivor else " Herbivorous")
-	
+	" Specie n° " + str(selfData.specie) + (" - Baby" if selfData.baby else "- Adult")+(" Carnivorous" if selfData.carnivor else " Herbivorous")
 	+ "\n- Age : " + str(selfData.age)
 	+ "\n- Max Age : " + str(selfData.maxAge)
 	+ "\n- Adult Age : " + str(selfData.adultAge)
