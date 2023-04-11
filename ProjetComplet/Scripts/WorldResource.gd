@@ -163,7 +163,9 @@ func update_world_resource(purge : bool=false, startAFire:bool=false):
 
 	for i in range(15) :
 		it+=1
-		it = it % tilesData.size() 
+		if it >= tilesData.size() :
+			it = 0
+			updateTilesArray.shuffle()
 		updateTilesArray[it].collapse_tile(atmosphere.temperature)
 
 	for i in updateTilesArray :
