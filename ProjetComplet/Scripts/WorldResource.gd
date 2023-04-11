@@ -176,7 +176,7 @@ func update_world_resource(purge : bool=false, startAFire:bool=false):
 			
 	for entity in entities:
 		
-		if startAFire==true or randf()<clamp(atmosphere.temperature-50,0,50)/3000000. :
+		if startAFire==true or randf()<clamp(atmosphere.temperature-50,0,50)/30000000. :
 			startAFire=true
 			while startAFire :
 				var rndEntity =entities.pick_random()
@@ -186,9 +186,10 @@ func update_world_resource(purge : bool=false, startAFire:bool=false):
 		if entity !=null :
 			if entity.entityResource.isOnFire :
 				entity.entityResource.timeOnFire+=1
-			for surroundingCenters in pointDictionnary[entity.entityResource.position] :
-				for edgesToFire in centersDictionary[surroundingCenters] :
-					if entities[get_edge_index(edgesToFire)]!=null and entity.entityResource.timeOnFire>100 and not entities[get_edge_index(edgesToFire)].entityResource.isOnFire : entities[get_edge_index(edgesToFire)].burn()
+				if  (not atmosphere.temperature<0) : 
+					for surroundingCenters in pointDictionnary[entity.entityResource.position] :
+						for edgesToFire in centersDictionary[surroundingCenters] :
+							if entities[get_edge_index(edgesToFire)]!=null and entity.entityResource.timeOnFire>100 and not entities[get_edge_index(edgesToFire)].entityResource.isOnFire : entities[get_edge_index(edgesToFire)].burn()
 				
 			var toDelete = true 
 			for surroundingCenters in pointDictionnary[entity.entityResource.position] :

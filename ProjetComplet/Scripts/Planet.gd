@@ -11,7 +11,7 @@ var target : Agent = null
 #Potentiel raycasting
 func _unhandled_input(event):
 	if event is InputEventMouseButton:
-		if (event as InputEventMouseButton).button_index==1 and event.is_pressed(): 
+		if (event as InputEventMouseButton).button_index==1 and event.is_pressed() and (event as InputEventWithModifiers).is_shift_pressed() : 
 			
 			var camera = $"%Camera3D"
 			var from = camera.project_ray_origin(event.position)

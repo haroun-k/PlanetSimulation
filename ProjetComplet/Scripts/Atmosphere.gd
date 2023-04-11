@@ -20,8 +20,8 @@ func init_atmosphere():
 	self.entities = get_parent().get_node("WorldMesh").worldResource.entities
 	
 func changer_temp():
-	self.temperature = $"%WorldMesh".worldResource.amountOfVegetation/ (10.0/(agents.size()+1)   ) + (agents.size()/50. - $"%WorldMesh".worldResource.amountOfVegetation/3.)
-	self.temperature = clamp(temperature+ temp_bias + snapped( (sin(Time.get_ticks_msec() / 1000.0) * 0.5), 0.1),temp_min,temp_max)
+	self.temperature = $"%WorldMesh".worldResource.amountOfVegetation/ (1000.0/(agents.size()+1)   ) + (agents.size()/15. - $"%WorldMesh".worldResource.amountOfVegetation/3.)
+	self.temperature = clamp(temperature/10+ temp_bias + snapped( (sin(Time.get_ticks_msec() / 1000.0) * 0.5), 0.1),temp_min,temp_max)
 
 	
 func calculate_water():
