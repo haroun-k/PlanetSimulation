@@ -13,7 +13,6 @@ enum ENTITY_TYPE {TREE,BUSH,STEAK,CARROT,GRASS,EMPTY}
 @export var mesh : Mesh
 
 func init_entity_resource(pos : Vector3,type : int, steakOr : int = 0):
-#	entityType=randi_range(0,ENTITY_TYPE.size())
 	entityType=type
 	isOnFire=false
 	timeOnFire=0

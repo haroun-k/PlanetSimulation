@@ -23,7 +23,6 @@ func get_nearest_entity_position():
 		var ents = world.get_entities_on_tile(i)
 		if ents.size()!=0 : 
 			for j in ents :
-#				if j!=null : 
 				if ((j.entityResource.entityType!=EntityResource.ENTITY_TYPE.STEAK and selfData.carnivor==false) or (j.entityResource.entityType==EntityResource.ENTITY_TYPE.STEAK and selfData.carnivor==true)) and (nearest==selfData.current_position*10 or ( j.entityResource!=null and j.entityResource.position.distance_squared_to(get_child(0).global_position)<nearest.distance_squared_to(get_child(0).global_position) ) ) and j.entityResource.position.distance_squared_to(get_child(0).global_position)<selfData.view_distance :
 					nearest=i
 	var res = nearest if nearest !=selfData.current_position*10 else selfData.current_position
@@ -205,10 +204,8 @@ func auto_move_ea():
 			else : take_random_direction()
 
 	if selfData.current_path.size()==0:
-#		print("je met un point sur moi meme pour eviter des bugs")
 		selfData.current_path=[selfData.current_position]
 	rotate_towards_direction()
-#	get_child(0).get_child(get_child(0).get_child_count()-1).global_position=selfData.current_path[selfData.current_path.size()-1]
 	update_position()
 
 
@@ -269,12 +266,9 @@ func paths_to_objs_array(path):
 func _ready():
 	selfData.agentScene.rotate(Vector3(1,0,0),-90)
 	
-#	selfData.directionMesh = MeshInstance3D.new()
-#	selfData.directionMesh.mesh=BoxMesh.new()
-#	selfData.directionMesh.set_scale(Vector3(0.5, 1, 0.5))
 	margin=0.03
 	spring_length=3000
-#	get_child(0).add_child(selfData.directionMesh)
+	
 	look_at(global_position*2)
 	
 	update_position()

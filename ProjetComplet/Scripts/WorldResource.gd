@@ -112,7 +112,6 @@ func get_random_world():
 func spawn_steak(world : Node3D, deathPos:Vector3, specieOrigin :int):
 	for entityPos in centersDictionary[deathPos] :
 		if entities[get_edge_index(entityPos)]== null :
-#			print("STEAK DROPPED GUYS")
 			init_entity(entityPos, EntityResource.ENTITY_TYPE.STEAK,specieOrigin)
 			world.add_child(entities[get_edge_index(entityPos)])
 			return
@@ -205,7 +204,6 @@ func update_world_resource(purge : bool=false, startAFire:bool=false):
 					toDelete=false
 				elif (entity.entityResource.entityType==EntityResource.ENTITY_TYPE.STEAK ):#and tilesData[get_point_index_ordered(surroundingCenters)].terrainType!=TileResource.TERRAIN_TYPE.WATER) :
 					entity.entityResource.steakCountdown-=1
-#					print("steakCD : ", entity.entityResource.steakCountdown)
 					toDelete=entity.entityResource.steakCountdown<0
 			if toDelete or purge : 
 				if purge : amountOfVegetation=0
