@@ -39,7 +39,7 @@ func play_animation(animationName : String) :
 func eat(food):
 	force_animation("Bite_Front")
 	selfData.ateOnce=true
-	selfData.feedingChildrensCooldown=10
+	selfData.feedingChildrensCooldown=20
 	if food is Agent :
 		if food.selfData.onFire :
 			selfData.onFire=true
@@ -102,7 +102,7 @@ func update():
 
 	for otherAgent in selfData.world.agents : 
 		if otherAgent!=self and selfData.carnivor:
-			if otherAgent.get_child(0).global_position.distance_squared_to(get_child(0).global_position)<selfData.view_distance :
+			if not otherAgent.selfData.baby and otherAgent.get_child(0).global_position.distance_squared_to(get_child(0).global_position)<selfData.view_distance :
 				if closestAdult==null or (selfData.world.speciesDictionary[otherAgent]==selfData.specie and otherAgent.get_child(0).global_position.distance_squared_to(get_child(0).global_position)<closestAdult.global_position.distance_squared_to(get_child(0).global_position)) : 
 					closestAdult=otherAgent
 				elif closestStranger==null or(otherAgent.get_child(0).global_position.distance_squared_to(get_child(0).global_position)<closestStranger.global_position.distance_squared_to(get_child(0).global_position)):
@@ -161,7 +161,7 @@ func auto_move_ea():
 					else : 
 						selfData.current_path = world.myAstar.get_point_path(world.get_point_index_ordered(selfData.current_position), world.get_point_index_ordered(closestFoodPos))
 						selfData.current_path.pop_front()
-			elif selfData.ticksSinceReproduced>100 and selfData.ateOnce :
+			elif selfData.ticksSinceReproduced>70 and selfData.ateOnce :
 				reproduce()
 			else : take_random_direction()
 		else : 
@@ -203,10 +203,8 @@ func auto_move_ea():
 #		print("je met un point sur moi meme pour eviter des bugs")
 		selfData.current_path=[selfData.current_position]
 	rotate_towards_direction()
-#	get_child(0).get_child(get_child(0).get_child_count()-1).global_position=selfData.current_path[selfData.current_path.size()-1]
+	get_child(0).get_child(get_child(0).get_child_count()-1).global_position=selfData.current_path[selfData.current_path.size()-1]
 	update_position()
-#	get_child(0).rotate_object_local(transform.basis.y.normalized(), randf() ) #acos(get_rotation().dot(selfData.current_path[0])/(get_rotation().length()*selfData.current_path[0].length()))
-
 
 
 
@@ -236,7 +234,7 @@ func _init(wrld : Node3D, initialCenterPosition : Vector3, specieNumber : int, c
 		selfData.fearFire=(copy.selfData.fearFire if randf()<copy.selfData.reproductionVariations else not copy.selfData.fearFire )
 		selfData.reproductionVariations=copy.selfData.reproductionVariations
 		selfData.metabolismSpeed=copy.selfData.metabolismSpeed
-		selfData.carnivor=(copy.selfData.carnivor if randf()<copy.selfData.reproductionVariations else not copy.selfData.carnivor )
+		selfData.carnivor=(copy.selfData.carnivor if randf()>copy.selfData.reproductionVariations else not copy.selfData.carnivor )
 		selfData.ateOnce=false
 		selfData.killed=false
 		selfData.agressivity=copy.selfData.agressivity
@@ -266,12 +264,12 @@ func paths_to_objs_array(path):
 func _ready():
 	selfData.agentScene.rotate(Vector3(1,0,0),-90)
 	
-#	selfData.directionMesh = MeshInstance3D.new()
-#	selfData.directionMesh.mesh=BoxMesh.new()
-#	selfData.directionMesh.set_scale(Vector3(0.5, 1, 0.5))
+	selfData.directionMesh = MeshInstance3D.new()
+	selfData.directionMesh.mesh=BoxMesh.new()
+	selfData.directionMesh.set_scale(Vector3(0.5, 1, 0.5))
 	margin=0.03
 	spring_length=3000
-#	get_child(0).add_child(selfData.directionMesh)
+	get_child(0).add_child(selfData.directionMesh)
 	look_at(global_position*2)
 	
 	update_position()

@@ -40,11 +40,11 @@ class_name AgentData extends Resource
 
 
 func randomize_genes(): 
-	maxAge=randi_range(1000,5000)
+	maxAge=randi_range(1000,9000)
 	adultAge=randi_range(0,maxAge/1.5)
 	age=adultAge/2
 	hunger=0
-	maxHunger=randi_range(400,adultAge/2)
+	maxHunger=randi_range(400,adultAge)
 	toleratedHunger=randi_range(0,maxHunger/1.6)
 	size=randf_range(0.02,0.05)
 	baby=true

@@ -112,34 +112,32 @@ func init_tile(waterHeight : float):
 
 func atmosphere_effects(temperature : float, probas : Dictionary):
 
-	const TEMP_IDEAL_HERBE = 15.0
+	const TEMP_IDEAL_HERBE = 24.0
 
 	if probas[TERRAIN_TYPE.GRASS] == 0.0 and probas[TERRAIN_TYPE.TALL_GRASS] == 0.0 :
 		return
 
 	if self.terrainType == TERRAIN_TYPE.GRASS :
 		probas[TERRAIN_TYPE.GRASS] += self.extra_data / 10.0
-		probas[TERRAIN_TYPE.GRASS] += self.distanceFromWater * 2.0
-		probas[TERRAIN_TYPE.TALL_GRASS] += self.distanceFromWater
+		probas[TERRAIN_TYPE.GRASS] += self.distanceFromWater
+		probas[TERRAIN_TYPE.TALL_GRASS] += self.distanceFromWater  * 2.0
 
 	if self.terrainType == TERRAIN_TYPE.TALL_GRASS :
 		probas[TERRAIN_TYPE.GRASS] += self.extra_data / 10.0
-		probas[TERRAIN_TYPE.GRASS] += 2.0 - self.distanceFromWater
-		probas[TERRAIN_TYPE.TALL_GRASS] += 2.0 - self.distanceFromWater * 2.0
+		probas[TERRAIN_TYPE.GRASS] += 2.0 - self.distanceFromWater*2.0
+		probas[TERRAIN_TYPE.TALL_GRASS] += 2.0 - self.distanceFromWater
 
 	var temp_diff = abs(temperature - TEMP_IDEAL_HERBE)
 	if (temp_diff < 10.0) :
-		probas[TERRAIN_TYPE.GRASS] += 1.0 - temp_diff / 50.0
-		probas[TERRAIN_TYPE.TALL_GRASS] += 1.0 - temp_diff / 50.0
+		probas[TERRAIN_TYPE.GRASS] += 1.0 - temp_diff/50.0
+		probas[TERRAIN_TYPE.TALL_GRASS] += 1.0 - temp_diff/50.0
 	
 	else :
 		probas[TERRAIN_TYPE.GRASS] -= temp_diff / 400.0
 		probas[TERRAIN_TYPE.TALL_GRASS] -= temp_diff / 400.0
 
-	const TEMP_ASSECHEMENT = 45.0
+	const TEMP_ASSECHEMENT = 80.0
 	probas[TERRAIN_TYPE.MUD] += clampf((temperature - TEMP_ASSECHEMENT)/5.0, 0.0, 20.0)
-	probas[TERRAIN_TYPE.GRASS] -= clampf((temperature - TEMP_ASSECHEMENT)/10.0, 0.0, 10.0)
-	probas[TERRAIN_TYPE.TALL_GRASS] -= clampf((temperature - TEMP_ASSECHEMENT)/10.0, 0.0, 5.0)
 	probas[TERRAIN_TYPE.GRASS] = max(probas[TERRAIN_TYPE.GRASS], 0.0)
 	probas[TERRAIN_TYPE.TALL_GRASS] = max(probas[TERRAIN_TYPE.TALL_GRASS], 0.0)
 	
@@ -155,7 +153,6 @@ func collapse_tile(temperature : float) -> bool:
 	for t in range(TERRAIN_TYPE.keys().size()):
 		if t != TERRAIN_TYPE.UNDEFINED :
 			probas[t] = 0.0
-			
 
 	for n in neighbours :
 		if n.terrainType != TERRAIN_TYPE.UNDEFINED :
@@ -175,10 +172,10 @@ func collapse_tile(temperature : float) -> bool:
 		if p!=0:
 			has_probas = true
 			break
-			
+
 	if not has_probas:
 		return true
-		
+
 	atmosphere_effects(temperature, probas)
 
 	if (isGrass() || isTallGrass()) && self.extra_data > 200 :
@@ -201,6 +198,8 @@ func collapse_tile(temperature : float) -> bool:
 	for t in weighted_tile_probas :
 		if r<t[1] :
 			self.terrainType = t[0]
+			if not (isGrass() or isTallGrass()) :
+				self.extra_data = 0
 			break
 	
 	if self.isWater():
@@ -232,8 +231,7 @@ func update_tile(waterHeight : float, temperature : float):
 
 	if self.isGrass() or self.isTallGrass():
 		self.extra_data +=1
-	else :
-		self.extra_data = 0
+
 		
 	for i in neighbours :
 		i.distanceFromWater=min(i.distanceFromWater,distanceFromWater+1)
