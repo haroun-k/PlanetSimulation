@@ -1,12 +1,7 @@
 extends Label
 
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
+# Fonction appellé à chaque frame. 'delta' est le temps s'étant écoulé depuis la dernière frame.
+# Elle affiche en information au dessus de celui-ci, la valeure séléctionnée avec le slider. 
 func _process(delta):
 	
 	set_text( "Biais de niveau d'eau : " + str($"%waterSlider".value / 10.0) + "m" )
