@@ -53,7 +53,7 @@ func randomize_genes():
 	speed=randi_range(3,10)
 	fear=true if randi_range(0,1)==1 else false
 	fearFire=true if randi_range(0,1)==1 else false
-	reproductionVariations=randf_range(0,0.1)
+	reproductionVariations=randf_range(0.05,0.2)
 	metabolismSpeed=randi_range(1,4)
 	carnivor=true if randi_range(0,1)==1 else false
 	agressivity=randf()

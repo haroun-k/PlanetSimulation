@@ -72,13 +72,13 @@ var wfc_updates : Dictionary = {
 func get_color(temp : int):
 	match terrainType :
 		TERRAIN_TYPE.GRASS :
-			return Color.GREEN.lerp(Color.PALE_GREEN,clampf((distanceFromWater-1)/5.,0,1))+Color(clampi(temp,-50,0)/-50.,clampi(temp,-50,0)/-50.,clampi(temp,-50,0)/-50.)
+			return Color.GREEN.lerp(Color.PALE_GREEN,clampf((distanceFromWater-1)/5.,0,1))+Color(clampi(temp,-10,0)/-10.,clampi(temp,-10,0)/-10.,clampi(temp,-10,0)/-10.)
 		TERRAIN_TYPE.TALL_GRASS :
-			return Color.DARK_GREEN+Color(clampi(temp,-50,0)/-50.,clampi(temp,-50,0)/-50.,clampi(temp,-50,0)/-50.)/1.5
+			return Color.DARK_GREEN+Color(clampi(temp,-10,0)/-10.,clampi(temp,-10,0)/-10.,clampi(temp,-10,0)/-10.)/1.5
 		TERRAIN_TYPE.WATER :
-			return Color.DODGER_BLUE+Color(clampi(temp,-50,0)/-50.,clampi(temp,-50,0)/-50.,clampi(temp,-50,0)/-50.)/2.
+			return Color.DODGER_BLUE+Color(clampi(temp,-10,0)/-10.,clampi(temp,-10,0)/-10.,clampi(temp,-10,0)/-10.)/2.
 		TERRAIN_TYPE.MUD :
-			return Color.GOLDENROD+Color(clampi(temp,-50,0)/-50.,clampi(temp,-50,0)/-50.,clampi(temp,-50,0)/-50.)/3.
+			return Color.GOLDENROD+Color(clampi(temp,-10,0)/-10.,clampi(temp,-10,0)/-10.,clampi(temp,-10,0)/-10.)/3.
 		TERRAIN_TYPE.UNDEFINED :
 			return Color.BLACK
 
