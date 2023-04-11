@@ -136,3 +136,9 @@ func _ui_button_pressed(toHide:bool):
 		needToUpdate=false
 	await $Ui/Panel/MenuAnimationPlayer.animation_finished
 	can=true
+
+
+func _on_color_picker_button_color_changed(color):
+	var worldEnv : WorldEnvironment = get_node("WorldEnvironment")
+	worldEnv.get_environment().background_color=color
+	

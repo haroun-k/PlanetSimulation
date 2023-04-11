@@ -121,19 +121,19 @@ func spawn_entities(world : Node3D):
 	for td in tilesData :
 		if td.terrainType == TileResource.TERRAIN_TYPE.TALL_GRASS :
 			var entityPos = centersDictionary[td.tile_position].pick_random()
-			if ( randf()<(1-(amountOfVegetation/maxAmountOfVegetation))/1000. if (not spree) else amountOfVegetation<maxAmountOfVegetation ) and entities[get_edge_index(entityPos)]== null:
+			if ( randf()<(1-(amountOfVegetation/maxAmountOfVegetation))/10000. if (not spree) else amountOfVegetation<maxAmountOfVegetation ) and entities[get_edge_index(entityPos)]== null:
 				amountOfVegetation+=1
 				init_entity(entityPos, EntityResource.ENTITY_TYPE.CARROT)
 				world.add_child(entities[get_edge_index(entityPos)])
 		elif td.terrainType == TileResource.TERRAIN_TYPE.GRASS :
 			var entityPos = centersDictionary[td.tile_position].pick_random()
-			if ( randf()<(1-(amountOfVegetation/maxAmountOfVegetation))/1000. if (not spree) else amountOfVegetation<maxAmountOfVegetation ) and entities[get_edge_index(entityPos)]== null:
+			if ( randf()<(1-(amountOfVegetation/maxAmountOfVegetation))/10000. if (not spree) else amountOfVegetation<maxAmountOfVegetation ) and entities[get_edge_index(entityPos)]== null:
 				amountOfVegetation+=1
 				init_entity(entityPos,EntityResource.ENTITY_TYPE.TREE if randf()<0.5 else EntityResource.ENTITY_TYPE.BUSH)
 				world.add_child(entities[get_edge_index(entityPos)])
 		elif td.terrainType != TileResource.TERRAIN_TYPE.WATER :
 			var entityPos = centersDictionary[td.tile_position].pick_random()
-			if ( randf()<(1-(amountOfVegetation/maxAmountOfVegetation))/1000. if (not spree) else amountOfVegetation<maxAmountOfVegetation ) and entities[get_edge_index(entityPos)]== null:
+			if ( randf()<(1-(amountOfVegetation/maxAmountOfVegetation))/10000. if (not spree) else amountOfVegetation<maxAmountOfVegetation ) and entities[get_edge_index(entityPos)]== null:
 				amountOfVegetation+=1
 				init_entity(entityPos,EntityResource.ENTITY_TYPE.GRASS)
 				world.add_child(entities[get_edge_index(entityPos)])
@@ -176,7 +176,7 @@ func update_world_resource(purge : bool=false, startAFire:bool=false):
 			
 	for entity in entities:
 		
-		if startAFire==true or randf()<clamp(atmosphere.temperature-50,0,50)/30000000. :
+		if startAFire==true or randf()<clamp(atmosphere.temperature-30,0,20)/3000000. :
 			startAFire=true
 			while startAFire :
 				var rndEntity =entities.pick_random()
@@ -186,7 +186,7 @@ func update_world_resource(purge : bool=false, startAFire:bool=false):
 		if entity !=null :
 			if entity.entityResource.isOnFire :
 				entity.entityResource.timeOnFire+=1
-				if  (not atmosphere.temperature<0) : 
+				if  (not atmosphere.temperature<10) : 
 					for surroundingCenters in pointDictionnary[entity.entityResource.position] :
 						for edgesToFire in centersDictionary[surroundingCenters] :
 							if entities[get_edge_index(edgesToFire)]!=null and entity.entityResource.timeOnFire>100 and not entities[get_edge_index(edgesToFire)].entityResource.isOnFire : entities[get_edge_index(edgesToFire)].burn()

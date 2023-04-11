@@ -61,8 +61,6 @@ func rotate_towards_direction():
 		global_position = rotate_around_axis(global_position,axis.normalized(), angle / (50*(10/selfData.speed) )  )
 	
 	
-	if get_child(0).global_position != selfData.previousPos : get_child(0).look_at_from_position(get_child(0).global_position,selfData.previousPos, get_child(0).global_position )
-
 
 func rotate_around_axis(pos:Vector3, axis:Vector3, angle:float):
 	var x = pos.x*(cos(angle)+axis.x*axis.x*(1-cos(angle)))+pos.y*(axis.x*axis.y*(1-cos(angle))-axis.z*sin(angle))+pos.z*(axis.x*axis.z*(1-cos(angle))+axis.y*sin(angle))
@@ -91,10 +89,15 @@ var closestAdult : Agent = null
 var closestAdultHunger : int
 var closestFoodPos : Vector3
 var closestStranger : Agent =  null
-
+var orientCD : int =30
 
 
 func update():
+	if orientCD<0:
+		if get_child(0).global_position != selfData.previousPos : 
+			get_child(0).look_at_from_position(get_child(0).global_position,selfData.previousPos, get_child(0).global_position )
+		orientCD=20
+
 	selfData.previousPos=get_child(0).global_position
 	if selfData.lookForEntityCooldown<0 and world.amountOfVegetation!=0  :
 		closestFoodPos=get_nearest_entity_position()
@@ -108,6 +111,7 @@ func update():
 				elif closestStranger==null or(otherAgent.get_child(0).global_position.distance_squared_to(get_child(0).global_position)<closestStranger.global_position.distance_squared_to(get_child(0).global_position)):
 					closestStranger=otherAgent
 	
+	orientCD-=1
 	selfData.feedingChildrensCooldown-=1
 	selfData.ticksSinceReproduced+=1*selfData.metabolismSpeed
 	selfData.age+=1*selfData.metabolismSpeed
@@ -280,7 +284,8 @@ func _ready():
 
 func toString():
 	return(
-	" Specie n°" + str(selfData.specie)	+ ("- Baby" if selfData.baby else "- Adult")+(" Carnivorous" if selfData.carnivor else " Herbivorous")
+	" Specie n°" + str(selfData.specie) + ("- Baby" if selfData.baby else "- Adult")+(" Carnivorous" if selfData.carnivor else " Herbivorous")
+	
 	+ "\n- Age : " + str(selfData.age)
 	+ "\n- Max Age : " + str(selfData.maxAge)
 	+ "\n- Adult Age : " + str(selfData.adultAge)
