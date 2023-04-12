@@ -42,7 +42,7 @@ func _unhandled_input(event):
 				var minDist = 0.2
 				var dist
 				for a in agents:
-					dist = result.position.distance_to(a.selfData.current_position)
+					dist = result.position.distance_to(a.selfData.currentPosition)
 					if dist < minDist:
 						minDist = dist
 						target = a
@@ -84,9 +84,9 @@ func spawn_new_specie():
 	var randArray = icosphere.worldResource.centersNeighboursDictionary.keys()
 	randArray.shuffle()
 	for cent in randArray :
-		if icosphere.worldResource.myAstar.is_point_disabled(icosphere.worldResource.get_point_index_ordered(cent)) :
+		if icosphere.worldResource.myAstar.is_point_disabled(icosphere.worldResource.find_point_centersDict(cent)) :
 			for centNeighbour in icosphere.worldResource.centersNeighboursDictionary[cent] :
-				if not icosphere.worldResource.myAstar.is_point_disabled(icosphere.worldResource.get_point_index_ordered(centNeighbour)) :
+				if not icosphere.worldResource.myAstar.is_point_disabled(icosphere.worldResource.find_point_centersDict(centNeighbour)) :
 					var newAg=Agent.new(self, centNeighbour, nbSpecies)
 					add_child(newAg)
 					agents.push_back(newAg)
@@ -102,7 +102,7 @@ func update_agents():
 	for agent in agents:
 		agent.update()
 		if agent.is_dead() or agents.size()>100 :
-			icosphere.worldResource.spawn_steak(self, agent.selfData.current_position, agent.selfData.specie)
+			icosphere.worldResource.spawn_steak(self, agent.selfData.currentPosition, agent.selfData.specie)
 			speciesDictionary.erase(agent)
 			agent.queue_free()
 			agents.erase(agent)
