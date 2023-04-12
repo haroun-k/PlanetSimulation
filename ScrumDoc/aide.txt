@@ -19,7 +19,7 @@ Git va alors cloner le projet depuis GitLab et le télécharger sur votre machin
 
 1. Ouvrez Godot et assurez-vous d'utiliser une version 4.0 ou plus récente du moteur Godot.
 
-2. Dans le manager de projet de Godot, cliquez sur "Importer" dans le coin inférieur droit de la fenêtre.
+2. Dans le manager de projet de Godot, cliquez sur "Importer" dans le coin supérieur droit de la fenêtre.
 
 3. Dans la fenêtre contextuelle qui apparaît, naviguez jusqu'au dossier que vous avez cloné depuis GitLab et sélectionnez le fichier "projet/ProjetComplet/project.godot".
 
