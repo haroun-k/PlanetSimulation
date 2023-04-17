@@ -1,56 +1,45 @@
-# Groupe
-**BAUMANN Pierre 21105419** - Responsable environment
-
-**KRIFA Haroun 21132666** - Responsable agent
-
-
-## Simulation d'une planète
-Projet réalisé dans le cadre de l'UE LU2IN013 consistant en une simulation de l’évolution au cours du temps d’un monde en évolution habité.  
-
+## Planet Simulation
+Project carried out as part of the UE LU2IN013 involving a simulation of the evolution over time of an inhabited evolving world.
 ## Installation
 
 
-### Comment lancer la simulation :
+### How to launch the simulation:
 
 
-#### Étape 1 : Récupération du projet depuis GitLab
+#### Step 1: Retrieving the project from Github
 
-1. Assurez-vous d'avoir Git installé sur votre machine. Si ce n'est pas le cas, vous pouvez le télécharger à partir du site officiel de Git (https://git-scm.com/).
+1. Make sure you have Git installed on your machine. If not, you can download it from the official Git website (https://git-scm.com/).
 
-2. Ouvrez un terminal sur votre machine et naviguez vers le répertoire où vous souhaitez cloner le projet Godot.
+2. Open a terminal on your machine and navigate to the directory where you want to clone the Godot project.
 
-3. Utilisez la commande suivante pour cloner le projet depuis GitLab :
+3. Use the following command to clone the project from GitLab:
 
 ```
-git clone https://gitlabsu.sorbonne-universite.fr/lu2in013/fev2023/gr2/2genieurs/projet.git
+https://github.com/haroun-k/PlanetSimulation.git
 ```
-_Git va alors cloner le projet depuis GitLab et le télécharger sur votre machine._
+_Git will then clone the project from Github and download it to your machine._
 
 
 
 
 
-#### Étape 2 : Importation du projet dans Godot
+#### Step 2: Importing the project into Godot
 
-1. Ouvrez Godot et assurez-vous d'utiliser une version 4.0 ou plus récente du moteur Godot.
+1. Open Godot and make sure you are using version 4.0 or newer of the Godot engine.
 
-2. Dans le manager de projet de Godot, cliquez sur "Importer" dans le coin supérieur droit de la fenêtre.
+2. In the Godot project manager, click on "Import" in the upper right corner of the window.
 
-3. Dans la fenêtre contextuelle qui apparaît, naviguez jusqu'au dossier que vous avez cloné depuis GitLab et sélectionnez le fichier "projet/ProjetComplet/project.godot".
+3. In the popup window that appears, navigate to the folder that you cloned from Github and select the file "projet/ProjetComplet/project.godot".
 
-4. Cliquez sur "Ouvrir" pour importer le projet dans Godot.
-
-
+4. Click "Open" to import the project into Godot.
 
 
-#### Étape 3 : Lancement de l'exécution du projet
 
+#### Step 3: Launching the project execution
+1. Wait for the files to be reimported by Godot. Then press the F5 key or click on the "Run Project" button (represented by a white triangle) in the top right corner of the editor window to launch the execution of your Godot project.
 
-1. Patientez le temps que les fichiers soient réimporté par Godot. Appuyez ensuite sur la touche F5 ou cliquez sur le bouton "Run Project" (représenté par un triangle blanc) en haut à droite de la fenêtre de l'éditeur pour lancer l'exécution de votre projet Godot.
+2. You should now see your Godot project running in the game window of Godot.
+_(If you are asked to select a main scene: you need to select the file MainScene.tscn in the "Scenes" directory of the project.)_
 
-2. Vous devriez maintenant voir votre projet Godot s'exécuter dans la fenêtre de jeu de Godot.
-
-(Si il vous est demandé de sélectionner une scène principale : il faut sélectionner le fichier MainScene.tscn dans le repertoire "Scenes" du projet.)
-
-## État du Projet
-Le projet est terminé et ne sera plus modifié
+## Project Status
+The project was carried out with BAUMANN Pierre. It is completed and will not be further modified.
