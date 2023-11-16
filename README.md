@@ -42,4 +42,4 @@ _Git will then clone the project from Github and download it to your machine._
 _(If you are asked to select a main scene: you need to select the file MainScene.tscn in the "Scenes" directory of the project.)_
 
 ## Project Status
-The project was carried out with BAUMANN Pierre. It is completed and will not be further modified.
+The project was made by BAUMANN Pierre and KRIFA Haroun. It is completed and will not be further modified.
